@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service'; // Import AuthService
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,7 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      this.http.post<any>('http://localhost:8082/api/login', this.loginForm.value)
+      this.http.post<any>(`${environment.backendUrl}/api/login`, this.loginForm.value)
         .subscribe(response => {
           console.log('Login successful. Backend response:', response);
           console.log('JWT from backend:', response.jwt);

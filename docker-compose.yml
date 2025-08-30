@@ -1,15 +1,26 @@
 version: '3.8'
+
+networks:
+  portfolio-management-network:
+    driver: bridge
+
 services:
   frontend:
     build: ./frontend
+    image: DOCKER_USER/frontend:TAG
     ports:
-      - "8083:80"
+      - "3000:80"
     depends_on:
       - backend
+    environment:
+      - BACKEND_URL=http://backend:8080
+    networks:
+      - portfolio-management-network
+
   backend:
     build: ./user-api
     ports:
-      - "8082:8080"
+      - "3001:8080"
     depends_on:
       - db
     environment:
@@ -17,15 +28,27 @@ services:
       - spring.datasource.username=user
       - spring.datasource.password=password
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - frontend.url=http://frontend:80
+      - email.service.url=http://email-service:8081
+    networks:
+      - portfolio-management-network
+
   email-service:
     build: ./email-service
+    image: DOCKER_USER/email-service:TAG
     ports:
-      - "8081:8081"
+      - "3002:8081"
     environment:
       - MAIL_PASSWORD=${MAIL_PASSWORD}
+    networks:
+      - portfolio-management-network
+
   db:
     image: postgres:13
     environment:
       - POSTGRES_DB=portfolio
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
+    networks:
+      - portfolio-management-network

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-reset-password-form',
@@ -55,7 +56,7 @@ export class ResetPasswordFormComponent implements OnInit {
         newPassword: this.resetPasswordForm.value.newPassword
       };
 
-      this.http.post(`http://localhost:8082/api/auth/reset-password?token=${this.token}`, formData)
+      this.http.post(`${environment.backendUrl}/api/auth/reset-password?token=${this.token}`, formData)
         .subscribe({
           next: (response: any) => {
             this.message = 'Password reset successfully! You can now login with your new password.';

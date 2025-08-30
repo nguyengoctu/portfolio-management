@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,7 +25,7 @@ export class ForgotPasswordComponent {
 
   onSubmit() {
     if (this.forgotPasswordForm.valid) {
-      this.http.post('http://localhost:8082/api/auth/forgot-password', this.forgotPasswordForm.value)
+      this.http.post(`${environment.backendUrl}/api/auth/forgot-password`, this.forgotPasswordForm.value)
         .subscribe(
           (response: any) => {
             this.message = response.message || 'Password reset link sent to your email if it exists in our system.';
