@@ -28,6 +28,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        
+        // Skip JWT processing for public endpoints
+        String requestPath = request.getRequestURI();
+        System.out.println("JWT Filter - Processing request: " + requestPath);
+        if (requestPath.startsWith("/api/login") || requestPath.startsWith("/api/register") || requestPath.startsWith("/api/health")) {
+            System.out.println("JWT Filter - Skipping public endpoint: " + requestPath);
+            chain.doFilter(request, response);
+            return;
+        }
 
         final String authorizationHeader = request.getHeader("Authorization");
 

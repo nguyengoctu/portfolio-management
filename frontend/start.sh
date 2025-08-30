@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/sh
+
+# Create assets directory if it doesn't exist
+mkdir -p /usr/share/nginx/html/assets
 
 # Generate env.js file with environment variables
 cat > /usr/share/nginx/html/assets/env.js << EOF

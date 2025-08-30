@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  backendUrl: 'http://localhost:3001'
+  backendUrl: (window as any).__env?.BACKEND_URL || 'http://localhost:3001'
 };

@@ -25,14 +25,16 @@ public class SecurityConfig {
 
     @Value("${frontend.url:http://localhost:8083}")
     private String frontendUrl;
+    
+    @Value("${frontend.external.url:http://localhost:3000}")
+    private String frontendExternalUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").permitAll() // Allow all /api paths for now
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() // Allow all requests for debugging
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -56,7 +58,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(frontendUrl) // Allow requests from configurable frontend origin
+                        .allowedOrigins(frontendUrl, frontendExternalUrl) // Allow requests from both internal and external frontend
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

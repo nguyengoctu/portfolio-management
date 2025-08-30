@@ -56,6 +56,7 @@ pipeline {
                     export JWT_SECRET="$JWT_SECRET"
                     export JWT_EXPIRATION="$JWT_EXPIRATION"
                     export MAIL_PASSWORD="$MAIL_PASSWORD"
+                    export VM_HOST="$VM_HOST"
                     
                     # Replace only DOCKER_USER and TAG in image names (still needed for image references)
                     sed -i "s/DOCKER_USER/$DOCKERHUB_CREDENTIALS_USR/g" docker-compose.yml
@@ -66,6 +67,8 @@ pipeline {
                     echo "Building Docker images (tests will run automatically during build)..."
                     docker compose build
                     echo "All services built successfully with tests passing!"
+                    echo "Listing built images:"
+                    docker images | grep $DOCKERHUB_CREDENTIALS_USR
                 '''
             }
         }
@@ -91,23 +94,24 @@ pipeline {
                             export PUSH_LATEST=false
                         fi
                         
+                        # Export environment variables and substitute docker-compose.yml
+                        export DOCKER_USER="$DOCKER_USER"
+                        export TAG="$TAG"
+                        export JWT_SECRET="$JWT_SECRET"
+                        export JWT_EXPIRATION="$JWT_EXPIRATION"
+                        export MAIL_PASSWORD="$MAIL_PASSWORD"
+                        export VM_HOST="$VM_HOST"
+                        
+                        # Replace placeholders in docker-compose.yml
+                        sed -i "s/DOCKER_USER/$DOCKER_USER/g" docker-compose.yml
+                        sed -i "s/TAG/$TAG/g" docker-compose.yml
+                        
                         echo "Logging in as: $DOCKER_USER"
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         
                         echo "Pushing images to Docker Hub..."
                         
-                        # Push each service individually for better error handling
-                        for service in ad-service cart-service product-catalog-service recommendation-service shipping-service currency-service payment-service email-service checkout-service frontend; do
-                            echo "Pushing $DOCKER_USER/${service}:$TAG"
-                            docker push "$DOCKER_USER/${service}:$TAG" || echo "Failed to push $service, continuing..."
-                            
-                            # Only push latest tag if on main branch
-                            if [ "$PUSH_LATEST" = "true" ]; then
-                                echo "Tagging and pushing $DOCKER_USER/${service}:latest"
-                                docker tag "$DOCKER_USER/${service}:$TAG" "$DOCKER_USER/${service}:latest"
-                                docker push "$DOCKER_USER/${service}:latest" || echo "Failed to push latest tag for $service, continuing..."
-                            fi
-                        done
+                        docker compose push
                         
                         echo "Logout from Docker Hub"
                         docker logout
@@ -129,11 +133,16 @@ pipeline {
                     
                     # Copy docker-compose.yml and mysql-init to VM
                     scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT docker-compose.yml $VM_USER@$VM_HOST:~/deploy/portfolio-management/docker-compose.yml
-                    scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT -r mysql-init $VM_USER@$VM_HOST:~/deploy/
                     
-                    # Deploy on VM
+                    # Deploy on VM with environment variables
                     ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "
                         cd ~/deploy/portfolio-management && 
+                        # Set environment variables for Docker Compose
+                        export JWT_SECRET='$JWT_SECRET' &&
+                        export JWT_EXPIRATION='$JWT_EXPIRATION' &&
+                        export MAIL_PASSWORD='$MAIL_PASSWORD' &&
+                        export VM_HOST='$VM_HOST' &&
+                        echo 'Environment variables set' &&
                         echo 'Stopping existing containers...' &&
                         docker compose down --remove-orphans || true &&
                         echo 'Pulling latest images...' &&
