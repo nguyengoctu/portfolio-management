@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8083:80"
+    depends_on:
+      - backend
+  backend:
+    build: ./user-api
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db
+    environment:
+      - spring.datasource.url=jdbc:postgresql://db:5432/portfolio
+      - spring.datasource.username=user
+      - spring.datasource.password=password
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=portfolio
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
