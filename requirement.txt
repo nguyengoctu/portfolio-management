@@ -1,0 +1,65 @@
+Description & API
+In this challenge, you will develop a full-stack application that allows users to sign up and create/manage their developer portfolios. The focus will be on implementing robust user data management, ensuring security, creating dynamically generated pages, and optimizing the app for search engines (SEO).
+Learning Goals
+By completing this challenge, you will:
+
+Gain experience in full-stack development by creating a User Portfolio Management App.
+Enable users to sign up and create/manage their developer portfolios.
+Implement robust user data management and ensure security.
+Create dynamically generated pages for user profiles and projects.
+Optimize the app for search engines (SEO).
+Enhance your skills in front-end development using React, JavaScript, and CSS.
+Improve your understanding of server-side development using Node.js.
+Gain experience in deploying web applications and submitting repository and demo URLs.
+Requirements
+You should create a web application that includes the following elements:
+
+Create a User Portfolio Management App according to the design.
+By default, users are asked to sign in.
+On 'Sign In' Page, users can choose login with Github or by email and password.
+On 'Sign In' Page, users can select the 'forgot password' option and be redirected to the 'Forgot password' page.
+On 'Forgot Password' page, user can enter their email and get a magic link after selecting the 'Reset Password' button.
+When users select the magic link, they are redirected to the 'Choose new password' page.
+On 'Choose new password' page, users can enter a new password with the requirements given in the design.
+Users can sign up with email and password. Optionally, an email with a magic link can be sent to verify the account.
+On 'Profile setting' page, logged-in users can update their profile image, job title, name, and bio.
+On 'Projects setting' page, logged-in users can add new projects with project name, demo URL, repository URL, and description.
+On 'Projects setting' page, logged-in users can edit added projects.
+On 'Portfolio' page, users can see the name, job title, bio, and the projects.
+On 'Portfolio' page, others can send the user an email by selecting the contact button.
+Deploy the solution and submit Repository URL and Demo URL.
+Technical Details
+Front-end Development
+Framework: Use angular for building the user interface.
+State Management: Use a state management tool like Zustand or Redux for managing state.
+Styling: Use tailwind
+
+backend:
+Framework: Use spring boot, maven build
+Database: Use a database of your choice (e.g., MongoDB or PostgreSQL) for storing user data.
+Authentication
+Required: Users should be able to log in with Github or by email and password.
+Password Reset
+Required: Users should be able to reset their password using a magic link sent to their email.
+API Integration
+Email Service API
+
+You can use an email service API (e.g., SendGrid) to send emails for password reset and account verification.
+
+Custom API
+
+Create User: Endpoint to create a new user account.
+Update User: Endpoint to update user profile and project details.
+Get User: Endpoint to fetch user profile and project details.
+Send Email: Endpoint to send emails for password reset and account verification.
+API Endpoints
+
+POST /api/user/signup: Create a new user account.
+POST /api/user/login: Log in with email and password.
+POST /api/user/login/github: Log in with Github.
+POST /api/user/forgot-password: Send a magic link to reset the password.
+POST /api/user/reset-password: Reset the password using the magic link.
+PUT /api/user/profile: Update user profile details.
+PUT /api/user/projects: Add or edit user projects.
+GET /api/user/profile: Fetch user profile details.
+GET /api/user/projects: Fetch user projects.
