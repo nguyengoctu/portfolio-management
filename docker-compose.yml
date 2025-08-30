@@ -16,6 +16,13 @@ services:
       - spring.datasource.url=jdbc:postgresql://db:5432/portfolio
       - spring.datasource.username=user
       - spring.datasource.password=password
+      - JWT_SECRET=${JWT_SECRET}
+  email-service:
+    build: ./email-service
+    ports:
+      - "8081:8081"
+    environment:
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
   db:
     image: postgres:13
     environment:

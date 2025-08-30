@@ -1,6 +1,6 @@
 package com.example.userapi.security;
 
-import com.example.userapi.User;
+import com.example.userapi.model.User;
 import com.example.userapi.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

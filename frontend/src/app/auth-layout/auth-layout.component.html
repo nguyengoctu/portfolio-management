@@ -1,0 +1,24 @@
+<div class="min-h-screen flex">
+  <!-- Left Hero Section - Static, won't reload -->
+  <div class="flex-1 bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/90 to-purple-800/90"></div>
+    <!-- Geometric patterns -->
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-400/20 rounded-full -mb-32 -ml-32"></div>
+    <div class="absolute bottom-32 left-16 w-32 h-32 bg-purple-300/10 rounded-full"></div>
+    <div class="absolute top-64 left-32 w-48 h-48 bg-purple-400/15 rounded-full"></div>
+    
+    <div class="relative z-10 p-12 h-full flex flex-col justify-center max-w-lg">
+      <h1 class="text-white text-4xl font-bold mb-6">Easy Portfolio for Developer</h1>
+      <p class="text-purple-100 text-lg leading-relaxed">
+        As a web developer, having a portfolio is essential for showcasing your technical skills and attracting potential clients. A portfolio is a museum of your work, with past tech stacks, case studies, and your work history.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Form Section - Dynamic content -->
+  <div class="flex-1 bg-gray-50 flex items-center justify-center p-8">
+    <div class="w-full max-w-md">
+      <router-outlet />
+    </div>
+  </div>
+</div>

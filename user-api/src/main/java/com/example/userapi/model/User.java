@@ -1,4 +1,4 @@
-package com.example.userapi;
+package com.example.userapi.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,8 +13,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+    private String name;
     private String password;
+    private String email;
 
     public Long getId() {
         return id;
@@ -24,13 +25,14 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
+
 
     public String getPassword() {
         return password;
@@ -38,5 +40,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
