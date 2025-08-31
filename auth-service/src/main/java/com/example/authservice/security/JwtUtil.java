@@ -1,5 +1,6 @@
 package com.example.authservice.security;
 
+import com.example.authservice.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -29,6 +30,13 @@ public class JwtUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
+    public String generateTokenWithUser(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("emailVerified", user.getEmailVerified());
+        claims.put("name", user.getName());
+        return createToken(claims, user.getEmail());
+    }
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .claims(claims)
@@ -55,6 +63,14 @@ public class JwtUtil {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Boolean extractEmailVerified(String token) {
+        return extractClaim(token, claims -> claims.get("emailVerified", Boolean.class));
+    }
+
+    public String extractName(String token) {
+        return extractClaim(token, claims -> claims.get("name", String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { EmailVerificationBannerComponent } from '../email-verification-banner/email-verification-banner.component';
 
 @Component({
   selector: 'app-login-success',
-  imports: [],
+  imports: [EmailVerificationBannerComponent],
   templateUrl: './login-success.html',
   styleUrl: './login-success.css'
 })

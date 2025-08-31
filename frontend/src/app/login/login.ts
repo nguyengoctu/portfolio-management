@@ -29,7 +29,7 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      this.http.post<any>(`${environment.authUrl}/api/login`, this.loginForm.value)
+      this.http.post<any>(`${environment.authUrl}/api/auth/login`, this.loginForm.value)
         .subscribe(response => {
           console.log('Login successful. Backend response:', response);
           console.log('JWT from backend:', response.jwt);

@@ -16,7 +16,11 @@ public class EmailController {
 
     @PostMapping("/send")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
-        emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getBody());
+        // Use HTML content if available, otherwise use plain text body
+        String content = emailRequest.getHtml() != null ? emailRequest.getHtml() : emailRequest.getBody();
+        boolean isHtml = emailRequest.getHtml() != null;
+        
+        emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), content, isHtml);
         return "Email sent successfully!";
     }
 }

@@ -4,6 +4,7 @@ public class EmailRequest {
     private String to;
     private String subject;
     private String body;
+    private String html;
 
     // Getters and Setters
     public String getTo() {
@@ -28,5 +29,13 @@ public class EmailRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
     }
 }

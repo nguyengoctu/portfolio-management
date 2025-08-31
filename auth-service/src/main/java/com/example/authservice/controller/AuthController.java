@@ -7,6 +7,7 @@ import com.example.authservice.repository.PasswordResetTokenRepository;
 import com.example.authservice.security.JwtUtil;
 import com.example.authservice.security.UserDetailsServiceImpl;
 import com.example.authservice.service.ForgotPasswordService;
+import com.example.authservice.service.EmailVerificationService;
 import com.example.authservice.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,16 +19,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -51,6 +54,9 @@ public class AuthController {
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
+    @Autowired
+    private EmailVerificationService emailVerificationService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
@@ -59,8 +65,14 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-            final String jwt = jwtUtil.generateToken(userDetails);
+            // Get user from database to include email verification status
+            User user = userRepository.findByEmail(loginRequest.getEmail());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new MessageResponse("User not found"));
+            }
+
+            final String jwt = jwtUtil.generateTokenWithUser(user);
 
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (BadCredentialsException e) {
@@ -74,13 +86,13 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/forgot-password")
+    @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         forgotPasswordService.createPasswordResetTokenForUser(forgotPasswordRequest.getEmail());
         return ResponseEntity.ok(new MessageResponse("Password reset link sent if email exists."));
     }
 
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()) != null) {
             return ResponseEntity.badRequest().body(new MessageResponse("Email is already in use!"));
@@ -90,13 +102,17 @@ public class AuthController {
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setEmailVerified(false); // New users need email verification
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        // Send verification email
+        emailVerificationService.sendVerificationEmail(user);
+
+        return ResponseEntity.ok(new MessageResponse("User registered successfully! Please check your email to verify your account."));
     }
 
-    @PostMapping("/auth/reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
         
@@ -115,5 +131,37 @@ public class AuthController {
         passwordResetTokenRepository.delete(resetToken);
         
         return ResponseEntity.ok(new MessageResponse("Password reset successfully"));
+    }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam("token") String token) {
+        boolean verified = emailVerificationService.verifyEmail(token);
+        
+        if (verified) {
+            return ResponseEntity.ok(new MessageResponse("Email verified successfully!"));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("Invalid or expired verification token"));
+        }
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<?> resendVerificationEmail(@RequestParam("email") String email) {
+        User user = userRepository.findByEmail(email);
+        
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User not found"));
+        }
+        
+        if (user.getEmailVerified()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Email is already verified"));
+        }
+        
+        emailVerificationService.sendVerificationEmail(user);
+        return ResponseEntity.ok(new MessageResponse("Verification email sent successfully"));
+    }
+
+    @GetMapping("/oauth2/authorize/github")
+    public RedirectView redirectToGitHub() {
+        return new RedirectView("/oauth2/authorization/github");
     }
 }

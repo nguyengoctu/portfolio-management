@@ -17,6 +17,7 @@ export class LoginFormComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
   isLoading: boolean = false;
+  isGitHubLoading: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -35,7 +36,7 @@ export class LoginFormComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      this.http.post<any>(`${environment.authUrl}/api/login`, this.loginForm.value)
+      this.http.post<any>(`${environment.authUrl}/api/auth/login`, this.loginForm.value)
         .subscribe({
           next: (response) => {
             console.log('Login successful. Backend response:', response);
@@ -62,5 +63,10 @@ export class LoginFormComponent {
     } else {
       this.errorMessage = 'Please fill in all required fields.';
     }
+  }
+
+  loginWithGitHub() {
+    this.isGitHubLoading = true;
+    window.location.href = `${environment.authUrl}/api/auth/oauth2/authorize/github`;
   }
 }

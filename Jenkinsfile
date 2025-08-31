@@ -8,6 +8,8 @@ pipeline {
         JWT_SECRET = credentials('jwt-secret-base64-user-portfolio')
         MAIL_PASSWORD = credentials('mailtrap-password')
         JWT_EXPIRATION = '3600000'
+        GITHUB_CLIENT_ID=credentials('GITHUB_CLIENT_ID')
+        GITHUB_CLIENT_SECRET=credentials('GITHUB_CLIENT_SECRET')
 
         BRANCH = "${params.BRANCH}"
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
@@ -56,6 +58,8 @@ pipeline {
                     export JWT_SECRET="$JWT_SECRET"
                     export JWT_EXPIRATION="$JWT_EXPIRATION"
                     export MAIL_PASSWORD="$MAIL_PASSWORD"
+                    export GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID"
+                    export GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET"
                     export VM_HOST="$VM_HOST"
                     
                     # Replace only DOCKER_USER and TAG in image names (still needed for image references)
