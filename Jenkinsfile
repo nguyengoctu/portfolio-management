@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'BRANCH', defaultValue: 'jenkins', description: 'Git branch to checkout')
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to checkout')
     }
     environment {
         // Load from Jenkins Credentials Store
@@ -40,11 +40,11 @@ pipeline {
                     BASE_VERSION=$(cat VERSION | tr -d '\n\r')
                     
                     # Create appropriate tag based on branch
-                    if [ "$BRANCH" = "main" ]; then
+                    if [ "$BRANCH" = "master" ]; then
                         export TAG="$BASE_VERSION"
-                        echo "Main branch - using version: $TAG"
+                        echo "master branch - using version: $TAG"
                     else
-                        # For non-main branches, append branch name and build number
+                        # For non-master branches, append branch name and build number
                         CLEAN_BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g')
                         export TAG="${BASE_VERSION}-${CLEAN_BRANCH}-${BUILD_NUMBER}"
                         echo "Feature branch - using version: $TAG"
@@ -80,13 +80,13 @@ pipeline {
                         BASE_VERSION=$(cat VERSION | tr -d '\n\r')
                         
                         # Create appropriate tag based on branch
-                        if [ "$BRANCH" = "main" ]; then
+                        if [ "$BRANCH" = "master" ]; then
                             export TAG="$BASE_VERSION"
                             echo "Main branch - using version: $TAG"
                             echo "Will push with version tag and latest tag"
                             export PUSH_LATEST=true
                         else
-                            # For non-main branches, append branch name and build number
+                            # For non-master branches, append branch name and build number
                             CLEAN_BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g')
                             export TAG="${BASE_VERSION}-${CLEAN_BRANCH}-${BUILD_NUMBER}"
                             echo "Feature branch - using version: $TAG"
