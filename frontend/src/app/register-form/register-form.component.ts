@@ -16,6 +16,7 @@ export class RegisterFormComponent {
   registerForm: FormGroup;
   message: string = '';
   isError: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,9 +32,12 @@ export class RegisterFormComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.isLoading = true;
+      this.message = '';
       this.http.post(`${environment.authUrl}/api/auth/register`, this.registerForm.value)
         .subscribe(
           (response: any) => {
+            this.isLoading = false;
             this.message = 'Registration successful! You can now login.';
             this.isError = false;
             setTimeout(() => {
@@ -41,6 +45,7 @@ export class RegisterFormComponent {
             }, 2000);
           },
           (error) => {
+            this.isLoading = false;
             this.message = error.error?.message || 'Registration failed. Please try again.';
             this.isError = true;
             console.error('Registration failed', error);
