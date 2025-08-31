@@ -67,6 +67,17 @@ export class ApiService {
     return this.http.get('/api/email/health');
   }
 
+  // Email verification endpoints
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get(`/api/auth/verify-email?token=${token}`);
+  }
+
+  resendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`/api/auth/resend-verification?email=${email}`, {}, { 
+      headers: this.getHeaders() 
+    });
+  }
+
   // Generic API method for custom endpoints
   get(endpoint: string): Observable<any> {
     return this.http.get(endpoint, { headers: this.getHeaders() });

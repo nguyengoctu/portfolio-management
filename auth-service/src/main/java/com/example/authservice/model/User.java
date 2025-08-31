@@ -16,6 +16,7 @@ public class User {
     private String name;
     private String password;
     private String email;
+    private Boolean emailVerified = false;
 
     public Long getId() {
         return id;
@@ -48,5 +49,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 }

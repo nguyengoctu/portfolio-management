@@ -35,7 +35,7 @@ export class LoginFormComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      this.http.post<any>(`${environment.authUrl}/api/login`, this.loginForm.value)
+      this.http.post<any>(`${environment.authUrl}/api/auth/login`, this.loginForm.value)
         .subscribe({
           next: (response) => {
             console.log('Login successful. Backend response:', response);

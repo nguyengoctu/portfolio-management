@@ -4,9 +4,7 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
-    "pathRewrite": {
-      "^/api/auth": "/api"
-    }
+    "pathRewrite": {}
   },
   "/api/user/*": {
     "target": "http://localhost:8083", 
