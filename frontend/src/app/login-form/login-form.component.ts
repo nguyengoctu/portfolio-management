@@ -17,6 +17,7 @@ export class LoginFormComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
   isLoading: boolean = false;
+  isGitHubLoading: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -62,5 +63,10 @@ export class LoginFormComponent {
     } else {
       this.errorMessage = 'Please fill in all required fields.';
     }
+  }
+
+  loginWithGitHub() {
+    this.isGitHubLoading = true;
+    window.location.href = `${environment.authUrl}/api/auth/oauth2/authorize/github`;
   }
 }

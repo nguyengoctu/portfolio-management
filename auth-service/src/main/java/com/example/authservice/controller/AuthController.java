@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 
@@ -157,5 +158,10 @@ public class AuthController {
         
         emailVerificationService.sendVerificationEmail(user);
         return ResponseEntity.ok(new MessageResponse("Verification email sent successfully"));
+    }
+
+    @GetMapping("/oauth2/authorize/github")
+    public RedirectView redirectToGitHub() {
+        return new RedirectView("/oauth2/authorization/github");
     }
 }

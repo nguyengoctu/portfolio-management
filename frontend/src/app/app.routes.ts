@@ -12,6 +12,7 @@ import { ForgotPasswordFormComponent } from './forgot-password-form/forgot-passw
 import { ResetPasswordFormComponent } from './reset-password-form/reset-password-form.component';
 import { ApiTestComponent } from './components/api-test.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { OAuthRedirectComponent } from './oauth-redirect/oauth-redirect.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -36,6 +37,7 @@ export const routes: Routes = [
     
     { path: 'dashboard', component: LoginSuccessComponent, canActivate: [AuthGuard], data: { animation: 'DashboardPage' } },
     { path: 'verify-email', component: VerifyEmailComponent, data: { animation: 'VerifyEmailPage' } },
+    { path: 'auth/oauth2/redirect', component: OAuthRedirectComponent, data: { animation: 'OAuthRedirectPage' } },
     { path: 'api-test', component: ApiTestComponent, data: { animation: 'ApiTestPage' } }, // API proxy test page
     { path: '**', component: NotFoundComponent, data: { animation: 'NotFoundPage' } } // Wildcard route for 404
 ];
