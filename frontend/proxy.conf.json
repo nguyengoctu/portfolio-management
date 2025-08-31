@@ -1,0 +1,29 @@
+{
+  "/api/auth/*": {
+    "target": "http://localhost:8082",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/auth": "/api"
+    }
+  },
+  "/api/user/*": {
+    "target": "http://localhost:8083", 
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/user": "/api"
+    }
+  },
+  "/api/email/*": {
+    "target": "http://localhost:3002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/email": "/api/email"
+    }
+  }
+}

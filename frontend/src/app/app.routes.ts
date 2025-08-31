@@ -10,6 +10,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { ForgotPasswordFormComponent } from './forgot-password-form/forgot-password-form.component';
 import { ResetPasswordFormComponent } from './reset-password-form/reset-password-form.component';
+import { ApiTestComponent } from './components/api-test.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -33,5 +34,6 @@ export const routes: Routes = [
     { path: 'forgot-password', redirectTo: '/auth/forgot-password' },
     
     { path: 'dashboard', component: LoginSuccessComponent, canActivate: [AuthGuard], data: { animation: 'DashboardPage' } },
+    { path: 'api-test', component: ApiTestComponent, data: { animation: 'ApiTestPage' } }, // API proxy test page
     { path: '**', component: NotFoundComponent, data: { animation: 'NotFoundPage' } } // Wildcard route for 404
 ];
