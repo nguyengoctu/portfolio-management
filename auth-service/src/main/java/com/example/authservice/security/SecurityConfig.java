@@ -23,11 +23,8 @@ public class SecurityConfig {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
-    @Value("${frontend.url:http://localhost:8083}")
+    @Value("${frontend.url:http://localhost:3000}")
     private String frontendUrl;
-    
-    @Value("${frontend.external.url:http://localhost:3000}")
-    private String frontendExternalUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -58,7 +55,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(frontendUrl, frontendExternalUrl)
+                        .allowedOrigins(frontendUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

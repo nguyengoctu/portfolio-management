@@ -5,8 +5,10 @@ This project is designed for practicing DevOps skills and technologies with Jenk
 ## Tech Stack
 
 **Frontend:** Angular 20+ with Tailwind CSS  
-**Backend:** Java Spring Boot with JWT authentication  
-**Database:** PostgreSQL  
+**Auth Service:** Java Spring Boot with JWT authentication  
+**User Service:** Java Spring Boot for user management  
+**Email Service:** Java Spring Boot for email functionality  
+**Database:** MySQL  
 **Infrastructure:** Docker & Docker Compose  
 **CI/CD:** Jenkins Pipeline
 
@@ -26,7 +28,9 @@ docker compose up -d --build
 
 # Access the application
 # Frontend: http://localhost:3000
-# Backend API: http://localhost:3001
+# Auth Service: http://localhost:8082
+# User Service: http://localhost:8083
+# Email Service: http://localhost:8081
 ```
 
 ### Jenkins Deployment
@@ -72,9 +76,15 @@ The application requires these environment variables to be configured in Jenkins
 The application uses a microservices architecture with Docker networking:
 
 - **Frontend**: Angular app served via Nginx (Port 3000)
-- **Backend**: Spring Boot API (Port 3001) 
-- **Email Service**: Node.js email service (Port 3002)
-- **Database**: PostgreSQL (Internal network only)
+- **Auth Service**: Spring Boot authentication API (Port 8082)
+- **User Service**: Spring Boot user management API (Port 8083) 
+- **Email Service**: Spring Boot email service (Port 8081)
+- **Database**: MySQL (Internal network only)
+
+### Service Separation
+- **Authentication**: Login, register, forgot password, reset password
+- **User Management**: User profiles, user data retrieval
+- **Email**: Password reset emails and notifications
 
 Services communicate using Docker service names instead of localhost.
 

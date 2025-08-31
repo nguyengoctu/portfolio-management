@@ -31,8 +31,7 @@ services:
       - spring.datasource.password=${MYSQL_PASSWORD:-password}
       - JWT_SECRET=${JWT_SECRET:-myVerySecretKeyThatIs32CharsLong123456789ABC}
       - JWT_EXPIRATION=${JWT_EXPIRATION:-3600000}
-      - frontend.url=http://frontend:80
-      - frontend.external.url=http://${VM_HOST:-localhost}:3000
+      - frontend.url=http://${VM_HOST:-localhost}:3000
       - email.service.url=http://email-service:8081
     networks:
       - portfolio-management-network

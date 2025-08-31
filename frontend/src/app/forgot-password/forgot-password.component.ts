@@ -25,7 +25,7 @@ export class ForgotPasswordComponent {
 
   onSubmit() {
     if (this.forgotPasswordForm.valid) {
-      this.http.post(`${environment.backendUrl}/api/auth/forgot-password`, this.forgotPasswordForm.value)
+      this.http.post(`${environment.authUrl}/api/auth/forgot-password`, this.forgotPasswordForm.value)
         .subscribe(
           (response: any) => {
             this.message = response.message || 'Password reset link sent to your email if it exists in our system.';
