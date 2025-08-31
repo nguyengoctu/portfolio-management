@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login-form',
@@ -34,7 +35,7 @@ export class LoginFormComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      this.http.post<any>('http://localhost:8082/api/login', this.loginForm.value)
+      this.http.post<any>(`${environment.backendUrl}/api/login`, this.loginForm.value)
         .subscribe({
           next: (response) => {
             console.log('Login successful. Backend response:', response);

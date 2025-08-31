@@ -32,6 +32,9 @@ public class ForgotPasswordService {
     @Value("${email.service.url:http://email-service:8081}")
     private String emailServiceUrl;
 
+    @Value("${frontend.url:http://localhost:8083}")
+    private String frontendUrl;
+
     public void createPasswordResetTokenForUser(String email) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
@@ -55,7 +58,7 @@ public class ForgotPasswordService {
         try {
             // Create email content
             String subject = "Password Reset Request";
-            String resetLink = "http://localhost:8080/auth/reset-password?token=" + token;
+            String resetLink = frontendUrl + "/auth/reset-password?token=" + token;
             String body = "Hello,\n\n" +
                          "You have requested to reset your password. Please click the link below to reset your password:\n\n" +
                          resetLink + "\n\n" +

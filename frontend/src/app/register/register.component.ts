@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -31,7 +32,7 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.http.post('http://localhost:8082/api/auth/register', this.registerForm.value)
+      this.http.post(`${environment.backendUrl}/api/auth/register`, this.registerForm.value)
         .subscribe(
           (response: any) => {
             this.message = 'Registration successful! You can now login.';

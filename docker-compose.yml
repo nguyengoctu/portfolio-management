@@ -1,31 +1,67 @@
-version: '3.8'
+networks:
+  portfolio-management-network:
+    driver: bridge
+
 services:
   frontend:
     build: ./frontend
+    image: DOCKER_USER/portfolio-management-networkporfolio-management-frontend:TAG
     ports:
-      - "8083:80"
+      - "3000:80"
     depends_on:
-      - backend
-  backend:
-    build: ./user-api
-    ports:
-      - "8082:8080"
-    depends_on:
-      - db
+      - user-api
     environment:
-      - spring.datasource.url=jdbc:postgresql://db:5432/portfolio
-      - spring.datasource.username=user
-      - spring.datasource.password=password
-      - JWT_SECRET=${JWT_SECRET}
+      - BACKEND_URL=http://${VM_HOST:-localhost}:3001
+    networks:
+      - portfolio-management-network
+
+  user-api:
+    build: ./user-api
+    image: DOCKER_USER/portfolio-management-networkporfolio-management-user-api:TAG
+    ports:
+      - "3001:8080"
+    depends_on:
+      portfolio-db:
+        condition: service_healthy
+    environment:
+      - spring.datasource.url=jdbc:mysql://portfolio-db:3306/portfolio
+      - spring.datasource.username=${MYSQL_USER:-user}
+      - spring.datasource.password=${MYSQL_PASSWORD:-password}
+      - JWT_SECRET=${JWT_SECRET:-myVerySecretKeyThatIs32CharsLong123456789ABC}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-3600000}
+      - frontend.url=http://frontend:80
+      - frontend.external.url=http://${VM_HOST:-localhost}:3000
+      - email.service.url=http://email-service:8081
+    networks:
+      - portfolio-management-network
+
   email-service:
     build: ./email-service
+    image: DOCKER_USER/porfolio-management-email-service:TAG
     ports:
-      - "8081:8081"
+      - "3002:8081"
     environment:
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-  db:
-    image: postgres:13
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-emailpassword}
+    networks:
+      - portfolio-management-network
+
+  portfolio-db:
+    image: mysql:8.0
     environment:
-      - POSTGRES_DB=portfolio
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_DATABASE=portfolio
+      - MYSQL_USER=${MYSQL_USER:-user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - portfolio-management-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-ppassword" ]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:
