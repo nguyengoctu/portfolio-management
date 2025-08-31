@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to checkout')
+        string(name: 'BRANCH', defaultValue: 'auth-service', description: 'Git branch to checkout')
     }
     environment {
         // Load from Jenkins Credentials Store
@@ -165,8 +165,11 @@ pipeline {
                         sleep 30
                         docker compose ps
                         
-                        # Test backend health
-                        curl -f http://localhost:3001/api/health || echo "Backend not ready yet"
+                        # Test auth service health
+                        curl -f http://localhost:8082/api/health || echo "Auth service not ready yet"
+                        
+                        # Test user service health
+                        curl -f http://localhost:8083/api/health || echo "User service not ready yet"
                         
                         # Test frontend health  
                         curl -f http://localhost:3000 || echo "Frontend not ready yet"

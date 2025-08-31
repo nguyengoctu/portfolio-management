@@ -1,0 +1,73 @@
+package com.example.userservice.controller;
+
+import com.example.userservice.model.User;
+import com.example.userservice.repository.UserRepository;
+import com.example.userservice.dto.UserResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.crypto.SecretKey;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserResponse> getUserProfile(@RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            String token = authorizationHeader.substring(7);
+            String email = extractEmailFromToken(token);
+            
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail());
+            return ResponseEntity.ok(userResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .map(user -> ResponseEntity.ok(new UserResponse(user.getId(), user.getName(), user.getEmail())))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponse(user.getId(), user.getName(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    private String extractEmailFromToken(String token) {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+        
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        
+        return claims.getSubject();
+    }
+}
