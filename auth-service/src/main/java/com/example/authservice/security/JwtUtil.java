@@ -32,6 +32,7 @@ public class JwtUtil {
 
     public String generateTokenWithUser(User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
         claims.put("emailVerified", user.getEmailVerified());
         claims.put("name", user.getName());
         return createToken(claims, user.getEmail());
@@ -71,6 +72,10 @@ public class JwtUtil {
 
     public String extractName(String token) {
         return extractClaim(token, claims -> claims.get("name", String.class));
+    }
+
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

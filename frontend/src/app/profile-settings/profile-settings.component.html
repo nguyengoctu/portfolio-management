@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <button
+        (click)="goBack()"
+        class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-4"
+      >
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back
+      </button>
+      <h1 class="text-2xl font-bold text-gray-900">Profile settings</h1>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+
+    <!-- Profile Form -->
+    <div *ngIf="!loading" class="bg-white shadow rounded-lg">
+      <form (ngSubmit)="onSubmit()" [formGroup]="profileForm">
+        <div class="px-6 py-6 space-y-6">
+          
+          <!-- Success/Error Messages -->
+          <div *ngIf="message" class="rounded-md p-4" 
+               [ngClass]="messageType === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg *ngIf="messageType === 'success'" class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <svg *ngIf="messageType === 'error'" class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium">{{ message }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Image Section -->
+          <div class="space-y-4">
+            <label class="block text-sm font-medium text-gray-700">Profile Image</label>
+            
+            <div class="flex items-center space-x-6">
+              <div class="flex-shrink-0">
+                <img
+                  [src]="getProfileImageUrl()"
+                  [alt]="userProfile?.name || 'Profile'"
+                  class="h-24 w-24 rounded-full object-cover border-4 border-gray-200"
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <div class="text-sm text-gray-500 mb-2">Image must be 256 x 256px - max 2MB</div>
+                
+                <div class="flex items-center space-x-2">
+                  <label for="profileImage" class="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    Upload Profile Image
+                  </label>
+                  <input
+                    id="profileImage"
+                    type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    class="hidden"
+                  />
+                  
+                  <button
+                    *ngIf="selectedFile"
+                    type="button"
+                    (click)="uploadProfileImage()"
+                    [disabled]="uploadingImage"
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                  >
+                    <span *ngIf="!uploadingImage">Save Image</span>
+                    <span *ngIf="uploadingImage" class="flex items-center">
+                      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Uploading...
+                    </span>
+                  </button>
+                  
+                  <button
+                    *ngIf="selectedFile"
+                    type="button"
+                    (click)="deleteImage()"
+                    class="inline-flex items-center px-3 py-2 border border-red-300 text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Delete Image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Fields -->
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                placeholder="example@mail.com"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                [class.border-red-500]="emailErrors"
+              />
+              <p *ngIf="emailErrors" class="mt-1 text-sm text-red-600">{{ emailErrors }}</p>
+            </div>
+
+            <!-- Job Title -->
+            <div>
+              <label for="jobTitle" class="block text-sm font-medium text-gray-700">Job title</label>
+              <input
+                type="text"
+                id="jobTitle"
+                formControlName="jobTitle"
+                placeholder="Enter your job title"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              placeholder="Enter your name"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="nameErrors"
+            />
+            <p *ngIf="nameErrors" class="mt-1 text-sm text-red-600">{{ nameErrors }}</p>
+          </div>
+
+          <!-- Bio -->
+          <div>
+            <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+            <textarea
+              id="bio"
+              formControlName="bio"
+              rows="4"
+              placeholder="Enter a short introduction..."
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-none"
+              [class.border-red-500]="bioErrors"
+            ></textarea>
+            <p *ngIf="bioErrors" class="mt-1 text-sm text-red-600">{{ bioErrors }}</p>
+            <p class="mt-1 text-sm text-gray-500">{{ profileForm.get('bio')?.value?.length || 0 }}/500 characters</p>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg flex justify-end">
+          <button
+            type="submit"
+            [disabled]="saving || !profileForm.valid"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span *ngIf="!saving">Save</span>
+            <span *ngIf="saving" class="flex items-center">
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

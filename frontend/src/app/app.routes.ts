@@ -13,6 +13,10 @@ import { ResetPasswordFormComponent } from './reset-password-form/reset-password
 import { ApiTestComponent } from './components/api-test.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { OAuthRedirectComponent } from './oauth-redirect/oauth-redirect.component';
+import { PortfolioDashboardComponent } from './portfolio-dashboard/portfolio-dashboard.component';
+import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
+import { ProjectsSettingsComponent } from './projects-settings/projects-settings.component';
+import { PortfolioViewComponent } from './portfolio-view/portfolio-view.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -35,9 +39,18 @@ export const routes: Routes = [
     { path: 'register', redirectTo: '/auth/register' },
     { path: 'forgot-password', redirectTo: '/auth/forgot-password' },
     
-    { path: 'dashboard', component: LoginSuccessComponent, canActivate: [AuthGuard], data: { animation: 'DashboardPage' } },
+    // Protected routes (require authentication)
+    { path: 'dashboard', component: PortfolioDashboardComponent, canActivate: [AuthGuard], data: { animation: 'DashboardPage' } },
+    { path: 'profile-settings', component: ProfileSettingsComponent, canActivate: [AuthGuard], data: { animation: 'ProfileSettingsPage' } },
+    { path: 'projects-settings', component: ProjectsSettingsComponent, canActivate: [AuthGuard], data: { animation: 'ProjectsSettingsPage' } },
+    
+    // Public routes
+    { path: 'portfolio/:userId', component: PortfolioViewComponent, data: { animation: 'PortfolioViewPage' } },
     { path: 'verify-email', component: VerifyEmailComponent, data: { animation: 'VerifyEmailPage' } },
     { path: 'auth/oauth2/redirect', component: OAuthRedirectComponent, data: { animation: 'OAuthRedirectPage' } },
+    
+    // Legacy/Test routes
+    { path: 'legacy-dashboard', component: LoginSuccessComponent, canActivate: [AuthGuard], data: { animation: 'LegacyDashboardPage' } },
     { path: 'api-test', component: ApiTestComponent, data: { animation: 'ApiTestPage' } }, // API proxy test page
     { path: '**', component: NotFoundComponent, data: { animation: 'NotFoundPage' } } // Wildcard route for 404
 ];
