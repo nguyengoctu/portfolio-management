@@ -8,23 +8,27 @@ export class AuthService {
   constructor() { }
 
   isLoggedIn(): boolean {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     console.log('AuthService - Token in localStorage:', token);
     return !!token;
   }
 
   // You might also add login/logout methods here
   login(token: string) {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('token', token);
   }
 
   logout() {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
   // Decode JWT token to get user information
   getCurrentUser(): any {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) {
       return null;
     }
@@ -36,6 +40,7 @@ export class AuthService {
       const userInfo = JSON.parse(decodedPayload);
       
       return {
+        id: userInfo.userId || userInfo.id,
         email: userInfo.sub,
         name: userInfo.name,
         emailVerified: userInfo.emailVerified || false
@@ -44,6 +49,12 @@ export class AuthService {
       console.error('Error decoding token:', error);
       return null;
     }
+  }
+
+  // Get current user ID
+  getCurrentUserId(): number | null {
+    const user = this.getCurrentUser();
+    return user ? user.id : null;
   }
 
   // Check if current user's email is verified
