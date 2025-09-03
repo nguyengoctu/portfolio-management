@@ -9,5 +9,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /home/ngoctu/project/mysql-data
+    path: /mysql-data
   persistentVolumeReclaimPolicy: Retain
