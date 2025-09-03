@@ -52,7 +52,7 @@ services:
       - spring.datasource.url=jdbc:mysql://portfolio-db:3306/portfolio
       - spring.datasource.username=${MYSQL_USER:-user}
       - spring.datasource.password=${MYSQL_PASSWORD:-password}
-      - JWT_SECRET=${JWT_SECRET:-myverylongsecretKeythatIs32CharsLong123456789ABC}
+      - JWT_SECRET=${JWT_SECRET:-bXlWZXJ5U2VjcmV0S2V5VGhhdElzMzJDaGFyc0xvbmcxMjM0NTY3ODlBQkM=}
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
       - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minioadmin}

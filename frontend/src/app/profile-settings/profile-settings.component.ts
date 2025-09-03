@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PortfolioService, UserProfile } from '../services/portfolio.service';
+import { ApiService } from '../services/api.service';
+import { UserSkill } from '../models/skill.model';
+import { SkillTagComponent } from '../components/skill-tag/skill-tag.component';
+import { SkillSelectorComponent } from '../components/skill-selector/skill-selector.component';
 
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, SkillTagComponent, SkillSelectorComponent],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.css'
 })
@@ -22,10 +26,16 @@ export class ProfileSettingsComponent implements OnInit {
   selectedFile: File | null = null;
   uploadingImage: boolean = false;
   previewUrl: string | null = null;
+  
+  // Skills related properties
+  userSkills: UserSkill[] = [];
+  showSkillSelector: boolean = false;
+  loadingSkills: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private portfolioService: PortfolioService,
+    private apiService: ApiService,
     private router: Router
   ) {
     this.profileForm = this.fb.group({
@@ -45,6 +55,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.portfolioService.getUserProfile().subscribe({
       next: (profile) => {
         this.userProfile = profile;
+        this.userSkills = profile.skills || [];
         this.profileForm.patchValue({
           name: profile.name,
           email: profile.email,
@@ -161,6 +172,36 @@ export class ProfileSettingsComponent implements OnInit {
   getProfileImageUrl(): string {
     if (this.previewUrl) return this.previewUrl;
     return this.userProfile?.profileImageUrl || '/assets/default-avatar.png';
+  }
+
+  // Skills management methods
+  toggleSkillSelector() {
+    this.showSkillSelector = !this.showSkillSelector;
+  }
+
+  onSkillAdded(userSkill: UserSkill) {
+    this.userSkills.push(userSkill);
+    this.showSkillSelector = false;
+    this.showMessage('Skill added successfully!', 'success');
+  }
+
+  onSkillSelectorCancelled() {
+    this.showSkillSelector = false;
+  }
+
+  onRemoveSkill(userSkill: UserSkill) {
+    if (!this.userProfile) return;
+
+    this.apiService.removeSkillFromUser(this.userProfile.id, userSkill.skill.id).subscribe({
+      next: () => {
+        this.userSkills = this.userSkills.filter(us => us.id !== userSkill.id);
+        this.showMessage('Skill removed successfully!', 'success');
+      },
+      error: (error) => {
+        console.error('Failed to remove skill:', error);
+        this.showMessage('Failed to remove skill', 'error');
+      }
+    });
   }
 
   get nameErrors() {

@@ -163,6 +163,47 @@
             <p *ngIf="bioErrors" class="mt-1 text-sm text-red-600">{{ bioErrors }}</p>
             <p class="mt-1 text-sm text-gray-500">{{ profileForm.get('bio')?.value?.length || 0 }}/500 characters</p>
           </div>
+
+          <!-- Skills Section -->
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <label class="block text-sm font-medium text-gray-700">Skills & Technologies</label>
+              <button
+                type="button"
+                (click)="toggleSkillSelector()"
+                class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Skill
+              </button>
+            </div>
+
+            <!-- Current Skills -->
+            <div *ngIf="userSkills.length > 0" class="flex flex-wrap gap-2">
+              <app-skill-tag
+                *ngFor="let userSkill of userSkills"
+                [userSkill]="userSkill"
+                [removable]="true"
+                (remove)="onRemoveSkill($event)"
+              ></app-skill-tag>
+            </div>
+
+            <!-- No Skills Message -->
+            <div *ngIf="userSkills.length === 0" class="text-sm text-gray-500 italic border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+              No skills added yet. Click "Add Skill" to get started.
+            </div>
+
+            <!-- Skill Selector -->
+            <app-skill-selector
+              *ngIf="showSkillSelector && userProfile"
+              [userId]="userProfile.id"
+              [userSkills]="userSkills"
+              (skillAdded)="onSkillAdded($event)"
+              (cancelled)="onSkillSelectorCancelled()"
+            ></app-skill-selector>
+          </div>
         </div>
 
         <!-- Form Actions -->

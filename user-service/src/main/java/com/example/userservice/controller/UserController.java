@@ -3,6 +3,7 @@ package com.example.userservice.controller;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.dto.UserResponse;
+import com.example.userservice.service.SkillService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private SkillService skillService;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -37,7 +41,9 @@ public class UserController {
                 return ResponseEntity.notFound().build();
             }
             
-            UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail());
+            UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(),
+                    user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+            userResponse.setSkills(skillService.getUserSkills(user.getId()));
             return ResponseEntity.ok(userResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -47,7 +53,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)
-                .map(user -> ResponseEntity.ok(new UserResponse(user.getId(), user.getName(), user.getEmail())))
+                .map(user -> {
+                    UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(),
+                            user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+                    userResponse.setSkills(skillService.getUserSkills(user.getId()));
+                    return ResponseEntity.ok(userResponse);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
