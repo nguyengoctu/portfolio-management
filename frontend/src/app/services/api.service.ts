@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,17 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
+    const token = localStorage.getItem('token');
+    const headers: any = {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-    });
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return new HttpHeaders(headers);
   }
 
   // Auth service endpoints
@@ -76,6 +84,43 @@ export class ApiService {
     return this.http.post(`/api/auth/resend-verification?email=${email}`, {}, { 
       headers: this.getHeaders() 
     });
+  }
+
+  // Skills API endpoints
+  getAllSkills(): Observable<any> {
+    return this.http.get(`${environment.userUrl}/api/skills`, { headers: this.getHeaders() });
+  }
+
+  getSkillCategories(): Observable<any> {
+    return this.http.get(`${environment.userUrl}/api/skills/categories`, { headers: this.getHeaders() });
+  }
+
+  getUserSkills(userId: number): Observable<any> {
+    return this.http.get(`${environment.userUrl}/api/skills/users/${userId}`, { headers: this.getHeaders() });
+  }
+
+  addSkillToUser(userId: number, skillData: any): Observable<any> {
+    const url = `${environment.userUrl}/api/skills/users/${userId}`;
+    const headers = this.getHeaders();
+    
+    console.log('=== API Service Debug ===');
+    console.log('URL:', url);
+    console.log('User ID:', userId);
+    console.log('Skill Data:', skillData);
+    console.log('Headers:', headers);
+    console.log('Authorization header:', headers.get('Authorization'));
+    console.log('=== End API Debug ===');
+    
+    return this.http.post(url, skillData, { headers });
+  }
+
+  updateUserSkill(userId: number, skillId: number, proficiencyLevel: string): Observable<any> {
+    return this.http.put(`${environment.userUrl}/api/skills/users/${userId}/skills/${skillId}`, 
+      { proficiencyLevel }, { headers: this.getHeaders() });
+  }
+
+  removeSkillFromUser(userId: number, skillId: number): Observable<any> {
+    return this.http.delete(`${environment.userUrl}/api/skills/users/${userId}/skills/${skillId}`, { headers: this.getHeaders() });
   }
 
   // Generic API method for custom endpoints

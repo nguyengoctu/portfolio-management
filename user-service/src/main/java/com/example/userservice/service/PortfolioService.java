@@ -4,6 +4,7 @@ import com.example.userservice.dto.ProfileUpdateRequest;
 import com.example.userservice.dto.ProjectRequest;
 import com.example.userservice.dto.ProjectResponse;
 import com.example.userservice.dto.UserResponse;
+import com.example.userservice.dto.UserSkillResponse;
 import com.example.userservice.model.Project;
 import com.example.userservice.model.User;
 import com.example.userservice.repository.ProjectRepository;
@@ -28,11 +29,17 @@ public class PortfolioService {
     @Autowired
     private MinIOService minIOService;
 
+    @Autowired
+    private SkillService skillService;
+
     public UserResponse getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
         
-        return new UserResponse(
+        // Get user skills
+        List<UserSkillResponse> userSkills = skillService.getUserSkills(userId);
+        
+        UserResponse response = new UserResponse(
             user.getId(),
             user.getName(),
             user.getEmail(),
@@ -40,6 +47,9 @@ public class PortfolioService {
             user.getBio(),
             user.getProfileImageUrl()
         );
+        response.setSkills(userSkills);
+        
+        return response;
     }
 
     @Transactional

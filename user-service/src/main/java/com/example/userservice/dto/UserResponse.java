@@ -1,5 +1,7 @@
 package com.example.userservice.dto;
 
+import java.util.List;
+
 public class UserResponse {
     private Long id;
     private String name;
@@ -7,6 +9,7 @@ public class UserResponse {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private List<UserSkillResponse> skills;
 
     public UserResponse() {
     }
@@ -72,5 +75,13 @@ public class UserResponse {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public List<UserSkillResponse> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<UserSkillResponse> skills) {
+        this.skills = skills;
     }
 }
