@@ -27,3 +27,4 @@ Thumbs.db
 # Logs
 *.log
 docker-compose-dev.yml
+*.yml.old
