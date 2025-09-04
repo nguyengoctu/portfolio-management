@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Autowired
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    @Value("${frontend.url:http://localhost:3000}")
+    @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
     @Bean

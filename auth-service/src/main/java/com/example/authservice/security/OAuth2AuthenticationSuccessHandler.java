@@ -22,7 +22,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${frontend.external.url}")
+    @Value("${APP_URL}")
     private String frontendUrl;
 
     @Override

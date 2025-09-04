@@ -32,7 +32,7 @@ public class ForgotPasswordService {
     @Value("${email.service.url:http://email-service:8081}")
     private String emailServiceUrl;
 
-    @Value("${frontend.url:http://localhost:3000}")
+    @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
     public void createPasswordResetTokenForUser(String email) {

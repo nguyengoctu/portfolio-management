@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    @Value("${frontend.url:http://localhost:3000}")
+    @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
     @Bean
