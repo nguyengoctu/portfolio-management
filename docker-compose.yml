@@ -12,8 +12,7 @@ services:
       - auth-service
       - user-service
     environment:
-      - AUTH_URL=http://${VM_HOST:-localhost}:8082
-      - USER_URL=http://${VM_HOST:-localhost}:8083
+      - FRONTEND_URL=${PROTOCOL:-http}://${VM_HOST:-localhost}:3000
     networks:
       - portfolio-management-network
 
@@ -31,8 +30,8 @@ services:
       - spring.datasource.password=${MYSQL_PASSWORD:-password}
       - JWT_SECRET=${JWT_SECRET:-bXlWZXJ5U2VjcmV0S2V5VGhhdElzMzJDaGFyc0xvbmcxMjM0NTY3ODlBQkM=}
       - JWT_EXPIRATION=${JWT_EXPIRATION:-3600000}
-      - frontend.url=http://${VM_HOST:-localhost}:3000
-      - frontend.external.url=http://${VM_HOST:-localhost}:3000
+      - frontend.url=${PROTOCOL:-http}://${VM_HOST:-localhost}:3000
+      - frontend.external.url=${PROTOCOL:-http}://${VM_HOST:-localhost}:3000
       - email.service.url=http://email-service:8081
       - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-yourClientID}
       - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-yourClientSecret}
@@ -55,7 +54,8 @@ services:
       - spring.datasource.password=${MYSQL_PASSWORD:-password}
       - JWT_SECRET=${JWT_SECRET:-bXlWZXJ5U2VjcmV0S2V5VGhhdElzMzJDaGFyc0xvbmcxMjM0NTY3ODlBQkM=}
       - MINIO_URL=http://minio:9000
-      - MINIO_PUBLIC_URL=http://${VM_HOST:-localhost}:9000
+      - MINIO_PUBLIC_URL=${PROTOCOL:-http}://${VM_HOST:-localhost}:9000
+      - frontend.url=${PROTOCOL:-http}://${VM_HOST:-localhost}:3000
       - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
       - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minioadmin}
     networks:

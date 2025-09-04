@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/skills")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"${frontend.url:http://localhost:3000}", "http://192.168.56.50:3000"})
 public class SkillController {
 
     private static final Logger logger = LoggerFactory.getLogger(SkillController.class);
