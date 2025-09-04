@@ -12,6 +12,7 @@ public class UserResponse {
     private List<UserSkillResponse> skills;
     private Boolean showSkillLevel;
     private Long portfolioViews;
+    private Boolean isPortfolioPublic;
 
     public UserResponse() {
     }
@@ -101,5 +102,13 @@ public class UserResponse {
 
     public void setPortfolioViews(Long portfolioViews) {
         this.portfolioViews = portfolioViews;
+    }
+
+    public Boolean getIsPortfolioPublic() {
+        return isPortfolioPublic;
+    }
+
+    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
+        this.isPortfolioPublic = isPortfolioPublic;
     }
 }

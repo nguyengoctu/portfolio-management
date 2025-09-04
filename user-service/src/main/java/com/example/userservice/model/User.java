@@ -20,6 +20,7 @@ public class User {
     private String profileImageUrl;
     private Boolean showSkillLevel = true;
     private Long portfolioViews = 0L;
+    private Boolean isPortfolioPublic = true;
 
     public Long getId() {
         return id;
@@ -83,5 +84,13 @@ public class User {
 
     public void setPortfolioViews(Long portfolioViews) {
         this.portfolioViews = portfolioViews;
+    }
+
+    public Boolean getIsPortfolioPublic() {
+        return isPortfolioPublic;
+    }
+
+    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
+        this.isPortfolioPublic = isPortfolioPublic;
     }
 }

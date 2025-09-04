@@ -17,9 +17,10 @@ import { PortfolioDashboardComponent } from './portfolio-dashboard/portfolio-das
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 import { ProjectsSettingsComponent } from './projects-settings/projects-settings.component';
 import { PortfolioViewComponent } from './portfolio-view/portfolio-view.component';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+    { path: '', component: HomeComponent, data: { animation: 'HomePage' } },
     
     // Auth routes with shared layout
     { 

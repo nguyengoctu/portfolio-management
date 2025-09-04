@@ -6,6 +6,7 @@ public class ProfileUpdateRequest {
     private String jobTitle;
     private String bio;
     private Boolean showSkillLevel;
+    private Boolean isPortfolioPublic;
 
     public String getName() {
         return name;
@@ -45,5 +46,13 @@ public class ProfileUpdateRequest {
 
     public void setShowSkillLevel(Boolean showSkillLevel) {
         this.showSkillLevel = showSkillLevel;
+    }
+
+    public Boolean getIsPortfolioPublic() {
+        return isPortfolioPublic;
+    }
+
+    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
+        this.isPortfolioPublic = isPortfolioPublic;
     }
 }

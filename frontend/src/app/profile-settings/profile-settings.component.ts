@@ -43,7 +43,8 @@ export class ProfileSettingsComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       jobTitle: [''],
       bio: ['', [Validators.maxLength(500)]],
-      showSkillLevel: [true]
+      showSkillLevel: [true],
+      isPortfolioPublic: [true]
     });
   }
 
@@ -62,7 +63,8 @@ export class ProfileSettingsComponent implements OnInit {
           email: profile.email,
           jobTitle: profile.jobTitle || '',
           bio: profile.bio || '',
-          showSkillLevel: profile.showSkillLevel !== false
+          showSkillLevel: profile.showSkillLevel !== false,
+          isPortfolioPublic: profile.isPortfolioPublic !== false
         });
         this.loading = false;
       },

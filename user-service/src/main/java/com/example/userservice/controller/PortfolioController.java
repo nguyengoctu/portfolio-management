@@ -171,6 +171,14 @@ public class PortfolioController {
     public ResponseEntity<?> getPublicPortfolio(@PathVariable Long userId, HttpServletRequest request) {
         try {
             UserResponse userProfile = portfolioService.getUserProfile(userId);
+            
+            // Check if portfolio is public
+            if (!userProfile.getIsPortfolioPublic()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "This portfolio is private");
+                return ResponseEntity.status(403).body(response);
+            }
+            
             List<ProjectResponse> projects = portfolioService.getUserProjects(userId);
             
             // Track portfolio view

@@ -56,6 +56,7 @@ public class PortfolioService {
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
         response.setPortfolioViews(user.getPortfolioViews());
+        response.setIsPortfolioPublic(user.getIsPortfolioPublic());
         
         return response;
     }
@@ -71,6 +72,9 @@ public class PortfolioService {
         user.setBio(request.getBio());
         if (request.getShowSkillLevel() != null) {
             user.setShowSkillLevel(request.getShowSkillLevel());
+        }
+        if (request.getIsPortfolioPublic() != null) {
+            user.setIsPortfolioPublic(request.getIsPortfolioPublic());
         }
 
         user = userRepository.save(user);
@@ -88,6 +92,8 @@ public class PortfolioService {
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
+        response.setPortfolioViews(user.getPortfolioViews());
+        response.setIsPortfolioPublic(user.getIsPortfolioPublic());
         
         return response;
     }
