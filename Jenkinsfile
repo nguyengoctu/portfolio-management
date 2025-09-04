@@ -133,10 +133,15 @@ pipeline {
                     chmod 600 ~/.ssh/vm_key
                     
                     # Clean and create deploy directory on VM
-                    ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "rm -rf ~/deploy/portfolio-management && mkdir -p ~/deploy/portfolio-management"
+                    ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "
+                        cd ~/deploy/portfolio-management 2>/dev/null && docker compose down --remove-orphans --volumes || true
+                        cd ~ && rm -rf ~/deploy/portfolio-management 2>/dev/null || true
+                        mkdir -p ~/deploy/portfolio-management
+                    "
                     
-                    # Copy docker-compose.yml and mysql-init to VM
+                    # Copy docker-compose.yml and db folder to VM
                     scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT docker-compose.yml $VM_USER@$VM_HOST:~/deploy/portfolio-management/docker-compose.yml
+                    scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT -r db $VM_USER@$VM_HOST:~/deploy/portfolio-management/
                     
                     # Deploy on VM with environment variables
                     ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "
@@ -146,6 +151,9 @@ pipeline {
                         export JWT_EXPIRATION='$JWT_EXPIRATION' &&
                         export MAIL_PASSWORD='$MAIL_PASSWORD' &&
                         export VM_HOST='$VM_HOST' &&
+                        export PROTOCOL='http' &&
+                        export GITHUB_CLIENT_ID='$GITHUB_CLIENT_ID' &&
+                        export GITHUB_CLIENT_SECRET='$GITHUB_CLIENT_SECRET' &&
                         echo 'Environment variables set' &&
                         echo 'Stopping existing containers...' &&
                         docker compose down --remove-orphans || true &&
