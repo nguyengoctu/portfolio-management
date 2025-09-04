@@ -1,11 +1,14 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.ContactMessageRequest;
 import com.example.userservice.dto.ProfileUpdateRequest;
 import com.example.userservice.dto.ProjectRequest;
 import com.example.userservice.dto.ProjectResponse;
 import com.example.userservice.dto.UserResponse;
 import com.example.userservice.security.JwtUtil;
+import com.example.userservice.service.ContactService;
 import com.example.userservice.service.PortfolioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ public class PortfolioController {
 
     @Autowired
     private PortfolioService portfolioService;
+
+    @Autowired
+    private ContactService contactService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -173,6 +179,22 @@ public class PortfolioController {
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Failed to get portfolio: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // Contact message endpoint
+    @PostMapping("/contact")
+    public ResponseEntity<?> sendContactMessage(@Valid @RequestBody ContactMessageRequest request) {
+        try {
+            contactService.sendContactMessage(request);
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Contact message sent successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Failed to send contact message: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

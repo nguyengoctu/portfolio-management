@@ -144,3 +144,11 @@
     </div>
   </main>
 </div>
+
+<!-- Contact Modal -->
+<app-contact-modal
+  [isOpen]="showContactModal"
+  [recipientName]="userProfile?.name || ''"
+  [recipientId]="userProfile?.id || 0"
+  (closeModal)="onCloseContactModal()"
+></app-contact-modal>

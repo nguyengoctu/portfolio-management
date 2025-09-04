@@ -123,6 +123,13 @@ export class ApiService {
     return this.http.delete(`${environment.userUrl}/api/skills/users/${userId}/skills/${skillId}`, { headers: this.getHeaders() });
   }
 
+  // Contact message endpoints
+  sendContactMessage(contactData: any): Observable<any> {
+    return this.http.post('/api/portfolio/contact', contactData, { 
+      headers: this.getHeaders() 
+    });
+  }
+
   // Generic API method for custom endpoints
   get(endpoint: string): Observable<any> {
     return this.http.get(endpoint, { headers: this.getHeaders() });

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PortfolioService, UserProfile, Project } from '../services/portfolio.service';
 import { SkillTagComponent } from '../components/skill-tag/skill-tag.component';
+import { ContactModalComponent } from '../components/contact-modal/contact-modal.component';
 
 @Component({
   selector: 'app-portfolio-view',
   standalone: true,
-  imports: [CommonModule, SkillTagComponent],
+  imports: [CommonModule, SkillTagComponent, ContactModalComponent],
   templateUrl: './portfolio-view.component.html',
   styleUrl: './portfolio-view.component.css'
 })
@@ -16,6 +17,7 @@ export class PortfolioViewComponent implements OnInit {
   projects: Project[] = [];
   loading: boolean = true;
   error: string = '';
+  showContactModal: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,8 +76,10 @@ export class PortfolioViewComponent implements OnInit {
   }
 
   sendEmail() {
-    if (this.userProfile?.email) {
-      window.location.href = `mailto:${this.userProfile.email}`;
-    }
+    this.showContactModal = true;
+  }
+
+  onCloseContactModal() {
+    this.showContactModal = false;
   }
 }
