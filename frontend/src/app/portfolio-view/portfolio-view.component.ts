@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PortfolioService, UserProfile, Project } from '../services/portfolio.service';
+import { AuthService } from '../auth/auth.service';
 import { SkillTagComponent } from '../components/skill-tag/skill-tag.component';
 import { ContactModalComponent } from '../components/contact-modal/contact-modal.component';
 
@@ -22,7 +23,8 @@ export class PortfolioViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private portfolioService: PortfolioService
+    private portfolioService: PortfolioService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -81,5 +83,18 @@ export class PortfolioViewComponent implements OnInit {
 
   onCloseContactModal() {
     this.showContactModal = false;
+  }
+
+  isOwnProfile(): boolean {
+    if (!this.userProfile || !this.authService.isLoggedIn()) {
+      return false;
+    }
+    
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser && currentUser.id === this.userProfile.id;
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['/profile-settings']);
   }
 }
