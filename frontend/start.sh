@@ -10,6 +10,8 @@ cat > /usr/share/nginx/html/assets/env.js << EOF
   
   // Environment variables
   window.__env.BACKEND_URL = '${BACKEND_URL}';
+  window.__env.AUTH_URL = '${AUTH_URL}';
+  window.__env.USER_URL = '${USER_URL}';
 })(this);
 EOF
 

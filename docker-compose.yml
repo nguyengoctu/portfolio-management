@@ -12,6 +12,8 @@ services:
       - auth-service
       - user-service
     environment:
+      - AUTH_URL=${PROTOCOL:-http}://${VM_HOST:-localhost}:8082
+      - USER_URL=${PROTOCOL:-http}://${VM_HOST:-localhost}:8083
       - FRONTEND_URL=${PROTOCOL:-http}://${VM_HOST:-localhost}:3000
     networks:
       - portfolio-management-network
