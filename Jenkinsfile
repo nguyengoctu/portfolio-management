@@ -154,6 +154,7 @@ pipeline {
                         export PROTOCOL='http' &&
                         export GITHUB_CLIENT_ID='$GITHUB_CLIENT_ID' &&
                         export GITHUB_CLIENT_SECRET='$GITHUB_CLIENT_SECRET' &&
+                        export frontend.url='http://$VM_HOST:3000' &&
                         echo 'Environment variables set' &&
                         echo 'Stopping existing containers...' &&
                         docker compose down --remove-orphans || true &&
