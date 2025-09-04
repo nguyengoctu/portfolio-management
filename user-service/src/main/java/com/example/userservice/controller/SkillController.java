@@ -17,7 +17,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/skills")
-@CrossOrigin(origins = "http://localhost:3000")
 public class SkillController {
 
     private static final Logger logger = LoggerFactory.getLogger(SkillController.class);

@@ -18,6 +18,9 @@ public class User {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private Boolean showSkillLevel = true;
+    private Long portfolioViews = 0L;
+    private Boolean isPortfolioPublic = true;
 
     public Long getId() {
         return id;
@@ -65,5 +68,29 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public Boolean getShowSkillLevel() {
+        return showSkillLevel;
+    }
+
+    public void setShowSkillLevel(Boolean showSkillLevel) {
+        this.showSkillLevel = showSkillLevel;
+    }
+
+    public Long getPortfolioViews() {
+        return portfolioViews;
+    }
+
+    public void setPortfolioViews(Long portfolioViews) {
+        this.portfolioViews = portfolioViews;
+    }
+
+    public Boolean getIsPortfolioPublic() {
+        return isPortfolioPublic;
+    }
+
+    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
+        this.isPortfolioPublic = isPortfolioPublic;
     }
 }

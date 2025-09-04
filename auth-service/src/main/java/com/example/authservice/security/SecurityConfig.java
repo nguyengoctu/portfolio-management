@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Autowired
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    @Value("${frontend.url:http://localhost:3000}")
+    @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
     @Bean
@@ -73,7 +73,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(frontendUrl)
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

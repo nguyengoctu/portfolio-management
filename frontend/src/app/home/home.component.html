@@ -1,0 +1,114 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold tracking-tight sm:text-6xl">
+          Discover Amazing Portfolios
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-blue-100">
+          Explore the most viewed portfolios from talented developers and designers
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Portfolios Section -->
+  <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        Popular Portfolios
+      </h2>
+      <p class="mt-4 text-lg text-gray-600">
+        Check out the most popular portfolios from our community
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-16">
+      <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="text-center py-16">
+      <div class="text-red-600 mb-4">
+        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Failed to load portfolios</h3>
+      <p class="text-gray-600">{{ error }}</p>
+      <button 
+        (click)="loadPopularPortfolios()" 
+        class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Portfolios Grid -->
+    <div *ngIf="!loading && !error" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div *ngFor="let portfolio of popularPortfolios" 
+           class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+           [routerLink]="['/portfolio', portfolio.id]">
+        
+        <!-- Profile Image -->
+        <div class="p-6 text-center">
+          <img 
+            [src]="getProfileImageUrl(portfolio)" 
+            [alt]="portfolio.name"
+            class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200"
+          />
+        </div>
+
+        <!-- Content -->
+        <div class="px-6 pb-6">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ portfolio.name }}</h3>
+            <p *ngIf="portfolio.jobTitle" class="text-sm text-blue-600 mb-3">{{ portfolio.jobTitle }}</p>
+            <p *ngIf="portfolio.bio" class="text-sm text-gray-600 mb-4 line-clamp-2">{{ portfolio.bio }}</p>
+            
+            <!-- Stats -->
+            <div class="flex justify-center items-center space-x-4 text-xs text-gray-500">
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                {{ portfolio.portfolioViews | number }} views
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && popularPortfolios.length === 0" class="text-center py-16">
+      <div class="text-gray-400 mb-4">
+        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">No portfolios yet</h3>
+      <p class="text-gray-600">Be the first to create a public portfolio!</p>
+    </div>
+  </div>
+
+  <!-- Call to Action - Only show if not logged in -->
+  <div *ngIf="!isLoggedIn" class="bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold tracking-tight mb-4">Ready to showcase your work?</h2>
+      <p class="text-lg text-blue-100 mb-8">Create your own portfolio and join our community</p>
+      <div class="space-x-4">
+        <a routerLink="/auth/register" 
+           class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-300">
+          Get Started
+        </a>
+        <a routerLink="/auth/login" 
+           class="inline-flex items-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-700 transition-colors duration-300">
+          Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

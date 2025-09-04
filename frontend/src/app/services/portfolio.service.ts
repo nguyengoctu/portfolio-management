@@ -12,6 +12,9 @@ export interface UserProfile {
   bio?: string;
   profileImageUrl?: string;
   skills?: UserSkill[];
+  showSkillLevel?: boolean;
+  portfolioViews?: number;
+  isPortfolioPublic?: boolean;
 }
 
 export interface Project {
@@ -35,7 +38,7 @@ export interface Portfolio {
 })
 export class PortfolioService {
 
-  private apiUrl = `${environment.userUrl}/api/portfolio`;
+  private apiUrl = `${window.location.origin}/api/portfolio`;
 
   constructor(private http: HttpClient) { }
 
@@ -109,5 +112,10 @@ export class PortfolioService {
   // Public portfolio
   getPublicPortfolio(userId: number): Observable<Portfolio> {
     return this.http.get<Portfolio>(`${this.apiUrl}/public/${userId}`);
+  }
+
+  // Popular portfolios
+  getPopularPortfolios(limit: number = 12): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.userUrl}/popular?limit=${limit}`);
   }
 }

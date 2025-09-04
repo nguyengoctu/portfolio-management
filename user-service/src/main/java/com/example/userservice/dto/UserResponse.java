@@ -10,6 +10,9 @@ public class UserResponse {
     private String bio;
     private String profileImageUrl;
     private List<UserSkillResponse> skills;
+    private Boolean showSkillLevel;
+    private Long portfolioViews;
+    private Boolean isPortfolioPublic;
 
     public UserResponse() {
     }
@@ -83,5 +86,29 @@ public class UserResponse {
 
     public void setSkills(List<UserSkillResponse> skills) {
         this.skills = skills;
+    }
+
+    public Boolean getShowSkillLevel() {
+        return showSkillLevel;
+    }
+
+    public void setShowSkillLevel(Boolean showSkillLevel) {
+        this.showSkillLevel = showSkillLevel;
+    }
+
+    public Long getPortfolioViews() {
+        return portfolioViews;
+    }
+
+    public void setPortfolioViews(Long portfolioViews) {
+        this.portfolioViews = portfolioViews;
+    }
+
+    public Boolean getIsPortfolioPublic() {
+        return isPortfolioPublic;
+    }
+
+    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
+        this.isPortfolioPublic = isPortfolioPublic;
     }
 }

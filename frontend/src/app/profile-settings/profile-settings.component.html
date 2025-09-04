@@ -180,6 +180,40 @@
               </button>
             </div>
 
+            <!-- Show Skill Level Toggle -->
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex flex-col">
+                <label for="showSkillLevel" class="text-sm font-medium text-gray-700">Show Skill Levels</label>
+                <p class="text-xs text-gray-500">Display proficiency levels (Beginner, Intermediate, etc.) on your public portfolio</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="showSkillLevel"
+                  formControlName="showSkillLevel"
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+
+            <!-- Portfolio Privacy Toggle -->
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex flex-col">
+                <label for="isPortfolioPublic" class="text-sm font-medium text-gray-700">Public Portfolio</label>
+                <p class="text-xs text-gray-500">Allow others to view your portfolio publicly. When disabled, only you can see your portfolio.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="isPortfolioPublic"
+                  formControlName="isPortfolioPublic"
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+
             <!-- Current Skills -->
             <div *ngIf="userSkills.length > 0" class="flex flex-wrap gap-2">
               <app-skill-tag

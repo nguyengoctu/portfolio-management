@@ -88,19 +88,19 @@ export class ApiService {
 
   // Skills API endpoints
   getAllSkills(): Observable<any> {
-    return this.http.get(`${environment.userUrl}/api/skills`, { headers: this.getHeaders() });
+    return this.http.get(`${environment.skillsUrl}`, { headers: this.getHeaders() });
   }
 
   getSkillCategories(): Observable<any> {
-    return this.http.get(`${environment.userUrl}/api/skills/categories`, { headers: this.getHeaders() });
+    return this.http.get(`${environment.skillsUrl}/categories`, { headers: this.getHeaders() });
   }
 
   getUserSkills(userId: number): Observable<any> {
-    return this.http.get(`${environment.userUrl}/api/skills/users/${userId}`, { headers: this.getHeaders() });
+    return this.http.get(`${environment.skillsUrl}/users/${userId}`, { headers: this.getHeaders() });
   }
 
   addSkillToUser(userId: number, skillData: any): Observable<any> {
-    const url = `${environment.userUrl}/api/skills/users/${userId}`;
+    const url = `${environment.skillsUrl}/users/${userId}`;
     const headers = this.getHeaders();
     
     console.log('=== API Service Debug ===');
@@ -115,12 +115,19 @@ export class ApiService {
   }
 
   updateUserSkill(userId: number, skillId: number, proficiencyLevel: string): Observable<any> {
-    return this.http.put(`${environment.userUrl}/api/skills/users/${userId}/skills/${skillId}`, 
+    return this.http.put(`${environment.skillsUrl}/users/${userId}/skills/${skillId}`, 
       { proficiencyLevel }, { headers: this.getHeaders() });
   }
 
   removeSkillFromUser(userId: number, skillId: number): Observable<any> {
-    return this.http.delete(`${environment.userUrl}/api/skills/users/${userId}/skills/${skillId}`, { headers: this.getHeaders() });
+    return this.http.delete(`${environment.skillsUrl}/users/${userId}/skills/${skillId}`, { headers: this.getHeaders() });
+  }
+
+  // Contact message endpoints
+  sendContactMessage(contactData: any): Observable<any> {
+    return this.http.post('/api/portfolio/contact', contactData, { 
+      headers: this.getHeaders() 
+    });
   }
 
   // Generic API method for custom endpoints

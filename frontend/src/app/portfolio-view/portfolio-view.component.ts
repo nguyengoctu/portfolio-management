@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PortfolioService, UserProfile, Project } from '../services/portfolio.service';
+import { AuthService } from '../auth/auth.service';
+import { SkillTagComponent } from '../components/skill-tag/skill-tag.component';
+import { ContactModalComponent } from '../components/contact-modal/contact-modal.component';
 
 @Component({
   selector: 'app-portfolio-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SkillTagComponent, ContactModalComponent],
   templateUrl: './portfolio-view.component.html',
   styleUrl: './portfolio-view.component.css'
 })
@@ -15,11 +18,13 @@ export class PortfolioViewComponent implements OnInit {
   projects: Project[] = [];
   loading: boolean = true;
   error: string = '';
+  showContactModal: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private portfolioService: PortfolioService
+    private portfolioService: PortfolioService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -73,8 +78,23 @@ export class PortfolioViewComponent implements OnInit {
   }
 
   sendEmail() {
-    if (this.userProfile?.email) {
-      window.location.href = `mailto:${this.userProfile.email}`;
+    this.showContactModal = true;
+  }
+
+  onCloseContactModal() {
+    this.showContactModal = false;
+  }
+
+  isOwnProfile(): boolean {
+    if (!this.userProfile || !this.authService.isLoggedIn()) {
+      return false;
     }
+    
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser && currentUser.id === this.userProfile.id;
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['/profile-settings']);
   }
 }

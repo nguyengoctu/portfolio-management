@@ -32,7 +32,7 @@ public class EmailVerificationService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${frontend.url}")
+    @Value("${APP_URL}")
     private String frontendUrl;
 
     @Value("${email.service.url}")

@@ -34,7 +34,7 @@ export class RegisterFormComponent {
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.message = '';
-      this.http.post(`${environment.authUrl}/api/auth/register`, this.registerForm.value)
+      this.http.post(`${environment.authUrl}/register`, this.registerForm.value)
         .subscribe(
           (response: any) => {
             this.isLoading = false;

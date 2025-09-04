@@ -1,15 +1,19 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.ContactMessageRequest;
 import com.example.userservice.dto.ProfileUpdateRequest;
 import com.example.userservice.dto.ProjectRequest;
 import com.example.userservice.dto.ProjectResponse;
 import com.example.userservice.dto.UserResponse;
 import com.example.userservice.security.JwtUtil;
+import com.example.userservice.service.ContactService;
 import com.example.userservice.service.PortfolioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,9 @@ public class PortfolioController {
 
     @Autowired
     private PortfolioService portfolioService;
+
+    @Autowired
+    private ContactService contactService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -161,10 +168,23 @@ public class PortfolioController {
 
     // Public endpoint to view someone's portfolio
     @GetMapping("/public/{userId}")
-    public ResponseEntity<?> getPublicPortfolio(@PathVariable Long userId) {
+    public ResponseEntity<?> getPublicPortfolio(@PathVariable Long userId, HttpServletRequest request) {
         try {
             UserResponse userProfile = portfolioService.getUserProfile(userId);
+            
+            // Check if portfolio is public
+            if (!userProfile.getIsPortfolioPublic()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "This portfolio is private");
+                return ResponseEntity.status(403).body(response);
+            }
+            
             List<ProjectResponse> projects = portfolioService.getUserProjects(userId);
+            
+            // Track portfolio view
+            String visitorIp = getClientIpAddress(request);
+            String userAgent = request.getHeader("User-Agent");
+            portfolioService.trackPortfolioView(userId, visitorIp, userAgent);
             
             Map<String, Object> response = new HashMap<>();
             response.put("profile", userProfile);
@@ -175,5 +195,36 @@ public class PortfolioController {
             response.put("message", "Failed to get portfolio: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    // Contact message endpoint
+    @PostMapping("/contact")
+    public ResponseEntity<?> sendContactMessage(@Valid @RequestBody ContactMessageRequest request) {
+        try {
+            contactService.sendContactMessage(request);
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Contact message sent successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Failed to send contact message: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // Helper method to get client IP address
+    private String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        
+        String xRealIp = request.getHeader("X-Real-IP");
+        if (xRealIp != null && !xRealIp.isEmpty()) {
+            return xRealIp;
+        }
+        
+        return request.getRemoteAddr();
     }
 }

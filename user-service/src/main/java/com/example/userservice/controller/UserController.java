@@ -69,6 +69,25 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/popular")
+    public ResponseEntity<List<UserResponse>> getPopularPortfolios(@RequestParam(defaultValue = "12") int limit) {
+        try {
+            List<User> popularUsers = userRepository.findTopUsersByPortfolioViews(limit);
+            List<UserResponse> userResponses = popularUsers.stream()
+                    .map(user -> {
+                        UserResponse response = new UserResponse(user.getId(), user.getName(), user.getEmail(),
+                                user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+                        response.setPortfolioViews(user.getPortfolioViews());
+                        response.setIsPortfolioPublic(user.getIsPortfolioPublic());
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(userResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     private String extractEmailFromToken(String token) {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         SecretKey key = Keys.hmacShaKeyFor(keyBytes);
