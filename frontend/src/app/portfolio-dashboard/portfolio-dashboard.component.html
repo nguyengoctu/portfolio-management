@@ -1,86 +1,4 @@
 <div class="min-h-screen bg-gray-50">
-  <!-- Header -->
-  <header class="bg-white shadow-sm border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <h1 class="text-xl font-bold text-indigo-600">DevPort</h1>
-          </div>
-        </div>
-
-        <!-- User Menu -->
-        <div class="relative" *ngIf="userProfile">
-          <button
-            (click)="toggleUserMenu()"
-            class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <img
-              [src]="getProfileImageUrl()"
-              [alt]="userProfile.name"
-              class="h-8 w-8 rounded-full object-cover"
-            />
-          </button>
-
-          <!-- Dropdown Menu -->
-          <div
-            *ngIf="showUserMenu"
-            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
-          >
-            <div class="px-4 py-3 border-b">
-              <p class="text-sm font-medium text-gray-900">{{ userProfile.name }}</p>
-              <p class="text-sm text-gray-500">{{ userProfile.email }}</p>
-            </div>
-            <div class="py-1">
-              <button
-                (click)="navigateToProfileSettings()"
-                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-              >
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-                Profile settings
-              </button>
-              <button
-                (click)="navigateToProjectSettings()"
-                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-              >
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                </svg>
-                Projects settings
-              </button>
-              <button
-                (click)="viewMyPortfolio()"
-                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-              >
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-                My Portfolio
-                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="border-t py-1">
-              <button
-                (click)="logout()"
-                class="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 flex items-center"
-              >
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                </svg>
-                Log out
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -191,7 +109,7 @@
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
-            (click)="navigateToProfileSettings()"
+            (click)="navigateToSkillsManagement()"
             class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <svg class="h-8 w-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +122,7 @@
           </button>
 
           <button
-            (click)="navigateToProjectSettings()"
+            (click)="navigateToProjectCreation()"
             class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <svg class="h-8 w-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,8 +134,9 @@
             </div>
           </button>
 
-          <button
-            (click)="viewMyPortfolio()"
+          <a
+            [routerLink]="userProfile ? ['/portfolio', userProfile.id] : []"
+            target="_blank"
             class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <svg class="h-8 w-8 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +147,7 @@
               <p class="text-sm font-medium text-gray-900">View Portfolio</p>
               <p class="text-xs text-gray-500">See public view</p>
             </div>
-          </button>
+          </a>
         </div>
       </div>
 
@@ -238,7 +157,7 @@
           <div class="flex justify-between items-center">
             <h2 class="text-lg font-semibold text-gray-900">Recent Projects</h2>
             <button
-              (click)="navigateToProjectSettings()"
+              (click)="navigateToProjectCreation()"
               class="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
             >
               View all
@@ -254,7 +173,7 @@
           <p class="mt-1 text-sm text-gray-500">Get started by creating your first project.</p>
           <div class="mt-6">
             <button
-              (click)="navigateToProjectSettings()"
+              (click)="navigateToProjectCreation()"
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,9 +268,3 @@
   </main>
 </div>
 
-<!-- Backdrop for mobile menu -->
-<div
-  *ngIf="showUserMenu"
-  class="fixed inset-0 bg-black bg-opacity-25 z-30 md:hidden"
-  (click)="showUserMenu = false"
-></div>

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { PortfolioService, UserProfile, Project } from '../services/portfolio.service';
-import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-portfolio-dashboard',
@@ -15,7 +14,6 @@ export class PortfolioDashboardComponent implements OnInit {
   userProfile: UserProfile | null = null;
   projects: Project[] = [];
   loading: boolean = true;
-  showUserMenu: boolean = false;
   
   // Dashboard-specific properties
   get skillsCount(): number {
@@ -45,7 +43,6 @@ export class PortfolioDashboardComponent implements OnInit {
 
   constructor(
     private portfolioService: PortfolioService,
-    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -72,32 +69,6 @@ export class PortfolioDashboardComponent implements OnInit {
     });
   }
 
-  toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
-  }
-
-  navigateToProfileSettings() {
-    this.router.navigate(['/profile-settings']);
-    this.showUserMenu = false;
-  }
-
-  navigateToProjectSettings() {
-    this.router.navigate(['/projects-settings']);
-    this.showUserMenu = false;
-  }
-
-  viewMyPortfolio() {
-    if (this.userProfile) {
-      this.router.navigate(['/portfolio', this.userProfile.id]);
-    }
-    this.showUserMenu = false;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
-    this.showUserMenu = false;
-  }
 
   getProfileImageUrl(): string {
     return this.userProfile?.profileImageUrl || '/assets/default-avatar.png';
