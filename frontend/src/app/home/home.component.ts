@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PortfolioService } from '../services/portfolio.service';
+import { AuthService } from '../auth/auth.service';
 
 export interface PopularPortfolio {
   id: number;
@@ -25,10 +26,12 @@ export class HomeComponent implements OnInit {
   popularPortfolios: PopularPortfolio[] = [];
   loading: boolean = true;
   error: string = '';
+  isLoggedIn: boolean = false;
 
-  constructor(private portfolioService: PortfolioService) {}
+  constructor(private portfolioService: PortfolioService, private authService: AuthService) {}
 
   ngOnInit() {
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.loadPopularPortfolios();
   }
 

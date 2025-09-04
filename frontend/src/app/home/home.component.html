@@ -94,8 +94,8 @@
     </div>
   </div>
 
-  <!-- Call to Action -->
-  <div class="bg-blue-600 text-white">
+  <!-- Call to Action - Only show if not logged in -->
+  <div *ngIf="!isLoggedIn" class="bg-blue-600 text-white">
     <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
       <h2 class="text-3xl font-bold tracking-tight mb-4">Ready to showcase your work?</h2>
       <p class="text-lg text-blue-100 mb-8">Create your own portfolio and join our community</p>

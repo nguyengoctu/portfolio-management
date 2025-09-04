@@ -4,7 +4,7 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { PortfolioService, UserProfile } from '../../services/portfolio.service';
 import { filter } from 'rxjs/operators';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showUserMenu: boolean = false;
   isLoggedIn: boolean = false;
   shouldShowHeader: boolean = true;
-  private authCheckSubscription?: Subscription;
+  private routeSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -31,25 +31,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.checkRouteForHeaderVisibility();
 
     // Subscribe to route changes to hide header on auth pages
-    this.router.events
+    this.routeSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.checkRouteForHeaderVisibility();
         this.checkAuthStatus(); // Recheck auth status on route changes
       });
-
-    // Periodically check auth status to handle token changes
-    this.authCheckSubscription = interval(1000).subscribe(() => {
-      const currentAuthState = this.authService.isLoggedIn();
-      if (currentAuthState !== this.isLoggedIn) {
-        this.checkAuthStatus();
-      }
-    });
   }
 
   ngOnDestroy() {
-    if (this.authCheckSubscription) {
-      this.authCheckSubscription.unsubscribe();
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
