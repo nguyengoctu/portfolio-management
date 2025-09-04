@@ -12,7 +12,7 @@
       <div class="relative" *ngIf="isLoggedIn && userProfile">
         <button
           (click)="toggleUserMenu()"
-          class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          class="user-menu-button flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           <img
             [src]="getProfileImageUrl()"
@@ -24,7 +24,7 @@
         <!-- Dropdown Menu -->
         <div
           *ngIf="showUserMenu"
-          class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
+          class="user-menu-dropdown origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
         >
           <div class="px-4 py-3 border-b">
             <p class="text-sm font-medium text-gray-900">{{ userProfile.name }}</p>

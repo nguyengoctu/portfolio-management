@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
@@ -128,6 +128,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Hide header on auth pages
     const authRoutes = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
     this.shouldShowHeader = !authRoutes.some(route => currentUrl.startsWith(route));
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const dropdown = target.closest('.user-menu-dropdown');
+    const button = target.closest('.user-menu-button');
+    
+    // Close dropdown if clicking outside both the button and dropdown
+    if (!dropdown && !button && this.showUserMenu) {
+      this.showUserMenu = false;
+    }
   }
 
   getProfileImageUrl(): string {
