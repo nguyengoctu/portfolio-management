@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'BRANCH', defaultValue: 'auth-service', description: 'Git branch to checkout')
+        string(name: 'BRANCH', defaultValue: 'deployment', description: 'Git branch to checkout')
     }
     environment {
         // Load from Jenkins Credentials Store
