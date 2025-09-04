@@ -16,6 +16,32 @@ export class PortfolioDashboardComponent implements OnInit {
   projects: Project[] = [];
   loading: boolean = true;
   showUserMenu: boolean = false;
+  
+  // Dashboard-specific properties
+  get skillsCount(): number {
+    return this.userProfile?.skills?.length || 0;
+  }
+  
+  get profileCompleteness(): number {
+    if (!this.userProfile) return 0;
+    
+    let completedFields = 0;
+    let totalFields = 7;
+    
+    if (this.userProfile.name) completedFields++;
+    if (this.userProfile.bio) completedFields++;
+    if (this.userProfile.profileImageUrl) completedFields++;
+    if (this.userProfile.jobTitle) completedFields++;
+    if (this.userProfile.email) completedFields++;
+    if (this.userProfile.skills && this.userProfile.skills.length > 0) completedFields++;
+    if (this.projects && this.projects.length > 0) completedFields++;
+    
+    return Math.round((completedFields / totalFields) * 100);
+  }
+  
+  get recentProjects(): Project[] {
+    return this.projects.slice(0, 3);
+  }
 
   constructor(
     private portfolioService: PortfolioService,
@@ -91,5 +117,18 @@ export class PortfolioDashboardComponent implements OnInit {
     if (url) {
       window.open(url, '_blank');
     }
+  }
+  
+  // Dashboard-specific methods
+  trackByProjectId(index: number, project: Project): string {
+    return project.id.toString();
+  }
+  
+  navigateToProjectCreation() {
+    this.router.navigate(['/projects-settings'], { queryParams: { action: 'create' } });
+  }
+  
+  navigateToSkillsManagement() {
+    this.router.navigate(['/profile-settings'], { fragment: 'skills' });
   }
 }
