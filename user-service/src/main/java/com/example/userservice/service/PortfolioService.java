@@ -7,13 +7,16 @@ import com.example.userservice.dto.UserResponse;
 import com.example.userservice.dto.UserSkillResponse;
 import com.example.userservice.model.Project;
 import com.example.userservice.model.User;
+import com.example.userservice.model.PortfolioView;
 import com.example.userservice.repository.ProjectRepository;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.repository.PortfolioViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,9 @@ public class PortfolioService {
 
     @Autowired
     private MinIOService minIOService;
+
+    @Autowired
+    private PortfolioViewRepository portfolioViewRepository;
 
     @Autowired
     private SkillService skillService;
@@ -49,6 +55,7 @@ public class PortfolioService {
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
+        response.setPortfolioViews(user.getPortfolioViews());
         
         return response;
     }
@@ -185,5 +192,39 @@ public class PortfolioService {
         response.setCreatedAt(project.getCreatedAt());
         response.setUpdatedAt(project.getUpdatedAt());
         return response;
+    }
+
+    // Track portfolio view
+    @Transactional
+    public void trackPortfolioView(Long userId, String visitorIp, String userAgent) {
+        // Check if this IP has viewed recently (within last hour) to prevent spam
+        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+        boolean hasRecentView = portfolioViewRepository.existsByUserIdAndVisitorIpAndViewedAtAfter(
+            userId, visitorIp, oneHourAgo
+        );
+        
+        if (!hasRecentView) {
+            // Create new view record
+            PortfolioView view = new PortfolioView();
+            view.setUserId(userId);
+            view.setVisitorIp(visitorIp);
+            view.setUserAgent(userAgent);
+            portfolioViewRepository.save(view);
+            
+            // Update user's total view count
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+            user.setPortfolioViews(user.getPortfolioViews() + 1);
+            userRepository.save(user);
+        }
+    }
+
+    // Get portfolio view statistics
+    public long getPortfolioViewCount(Long userId) {
+        return portfolioViewRepository.countByUserId(userId);
+    }
+
+    public long getTodayPortfolioViews(Long userId) {
+        return portfolioViewRepository.getTodayViewCount(userId);
     }
 }

@@ -11,6 +11,7 @@ public class UserResponse {
     private String profileImageUrl;
     private List<UserSkillResponse> skills;
     private Boolean showSkillLevel;
+    private Long portfolioViews;
 
     public UserResponse() {
     }
@@ -92,5 +93,13 @@ public class UserResponse {
 
     public void setShowSkillLevel(Boolean showSkillLevel) {
         this.showSkillLevel = showSkillLevel;
+    }
+
+    public Long getPortfolioViews() {
+        return portfolioViews;
+    }
+
+    public void setPortfolioViews(Long portfolioViews) {
+        this.portfolioViews = portfolioViews;
     }
 }

@@ -13,6 +13,7 @@ export interface UserProfile {
   profileImageUrl?: string;
   skills?: UserSkill[];
   showSkillLevel?: boolean;
+  portfolioViews?: number;
 }
 
 export interface Project {

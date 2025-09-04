@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -167,10 +168,15 @@ public class PortfolioController {
 
     // Public endpoint to view someone's portfolio
     @GetMapping("/public/{userId}")
-    public ResponseEntity<?> getPublicPortfolio(@PathVariable Long userId) {
+    public ResponseEntity<?> getPublicPortfolio(@PathVariable Long userId, HttpServletRequest request) {
         try {
             UserResponse userProfile = portfolioService.getUserProfile(userId);
             List<ProjectResponse> projects = portfolioService.getUserProjects(userId);
+            
+            // Track portfolio view
+            String visitorIp = getClientIpAddress(request);
+            String userAgent = request.getHeader("User-Agent");
+            portfolioService.trackPortfolioView(userId, visitorIp, userAgent);
             
             Map<String, Object> response = new HashMap<>();
             response.put("profile", userProfile);
@@ -197,5 +203,20 @@ public class PortfolioController {
             response.put("message", "Failed to send contact message: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    // Helper method to get client IP address
+    private String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        
+        String xRealIp = request.getHeader("X-Real-IP");
+        if (xRealIp != null && !xRealIp.isEmpty()) {
+            return xRealIp;
+        }
+        
+        return request.getRemoteAddr();
     }
 }
