@@ -1,7 +1,13 @@
+const getBaseUrl = () => {
+  // Check runtime env first, fallback to window.location.origin
+  return (window as any).__env?.APP_URL || window.location.origin;
+};
+
 export const environment = {
   production: false,
-  authUrl: (window as any).__env?.AUTH_URL || 'http://localhost:8082',
-  userUrl: (window as any).__env?.USER_URL || 'http://localhost:8083',
-  // Backward compatibility
-  backendUrl: (window as any).__env?.BACKEND_URL || 'http://localhost:8082'
+  // Base paths - check runtime env first
+  authUrl: `${getBaseUrl()}/api/auth`,
+  userUrl: `${getBaseUrl()}/api/user/users`,
+  skillsUrl: `${getBaseUrl()}/api/user/skills`,
+  backendUrl: `${getBaseUrl()}/api/auth`
 };

@@ -32,7 +32,7 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.http.post(`${environment.authUrl}/api/auth/register`, this.registerForm.value)
+      this.http.post(`${environment.authUrl}/register`, this.registerForm.value)
         .subscribe(
           (response: any) => {
             this.message = 'Registration successful! You can now login.';

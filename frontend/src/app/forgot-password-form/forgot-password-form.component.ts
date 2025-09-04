@@ -28,7 +28,7 @@ export class ForgotPasswordFormComponent {
     if (this.forgotPasswordForm.valid) {
       this.isLoading = true;
       this.message = '';
-      this.http.post(`${environment.authUrl}/api/auth/forgot-password`, this.forgotPasswordForm.value)
+      this.http.post(`${environment.authUrl}/forgot-password`, this.forgotPasswordForm.value)
         .subscribe(
           (response: any) => {
             this.isLoading = false;

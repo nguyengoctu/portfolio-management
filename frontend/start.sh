@@ -9,7 +9,15 @@ cat > /usr/share/nginx/html/assets/env.js << EOF
   window.__env = window.__env || {};
   
   // Environment variables
+  window.__env.APP_URL = '${APP_URL}';
   window.__env.BACKEND_URL = '${BACKEND_URL}';
+  
+  // Debug info
+  console.log('Runtime env loaded:', {
+    APP_URL: window.__env.APP_URL,
+    BACKEND_URL: window.__env.BACKEND_URL,
+    current_origin: window.location.origin
+  });
 })(this);
 EOF
 

@@ -36,7 +36,7 @@ export class LoginFormComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      this.http.post<any>(`${environment.authUrl}/api/auth/login`, this.loginForm.value)
+      this.http.post<any>(`${environment.authUrl}/login`, this.loginForm.value)
         .subscribe({
           next: (response) => {
             console.log('Login successful. Backend response:', response);
@@ -67,6 +67,6 @@ export class LoginFormComponent {
 
   loginWithGitHub() {
     this.isGitHubLoading = true;
-    window.location.href = `${environment.authUrl}/api/auth/oauth2/authorize/github`;
+    window.location.href = `${environment.authUrl}/oauth2/authorize/github`;
   }
 }

@@ -38,7 +38,7 @@ export interface Portfolio {
 })
 export class PortfolioService {
 
-  private apiUrl = `${environment.userUrl}/api/portfolio`;
+  private apiUrl = `${window.location.origin}/api/portfolio`;
 
   constructor(private http: HttpClient) { }
 
@@ -116,6 +116,6 @@ export class PortfolioService {
 
   // Popular portfolios
   getPopularPortfolios(limit: number = 12): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.userUrl}/api/users/popular?limit=${limit}`);
+    return this.http.get<any[]>(`${environment.userUrl}/popular?limit=${limit}`);
   }
 }
