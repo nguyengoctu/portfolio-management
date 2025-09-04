@@ -13,7 +13,7 @@ import { UserSkill, ProficiencyLevel } from '../../models/skill.model';
       [class.removable]="removable"
       [title]="getTooltipText()">
       <span class="skill-name">{{ userSkill.skill.name }}</span>
-      <span class="skill-level" [class]="getLevelClass()">{{ getProficiencyDisplay() }}</span>
+      <span *ngIf="showLevel" class="skill-level" [class]="getLevelClass()">{{ getProficiencyDisplay() }}</span>
       <button 
         *ngIf="removable" 
         class="remove-btn" 
@@ -103,6 +103,7 @@ import { UserSkill, ProficiencyLevel } from '../../models/skill.model';
 export class SkillTagComponent {
   @Input() userSkill!: UserSkill;
   @Input() removable: boolean = false;
+  @Input() showLevel: boolean = true;
   @Output() remove = new EventEmitter<UserSkill>();
 
   onRemove() {

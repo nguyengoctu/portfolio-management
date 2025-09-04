@@ -12,6 +12,7 @@ export interface UserProfile {
   bio?: string;
   profileImageUrl?: string;
   skills?: UserSkill[];
+  showSkillLevel?: boolean;
 }
 
 export interface Project {

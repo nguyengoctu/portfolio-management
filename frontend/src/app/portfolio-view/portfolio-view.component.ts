@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PortfolioService, UserProfile, Project } from '../services/portfolio.service';
+import { SkillTagComponent } from '../components/skill-tag/skill-tag.component';
 
 @Component({
   selector: 'app-portfolio-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SkillTagComponent],
   templateUrl: './portfolio-view.component.html',
   styleUrl: './portfolio-view.component.css'
 })

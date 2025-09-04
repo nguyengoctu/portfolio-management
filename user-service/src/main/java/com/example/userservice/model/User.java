@@ -18,6 +18,7 @@ public class User {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private Boolean showSkillLevel = true;
 
     public Long getId() {
         return id;
@@ -65,5 +66,13 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public Boolean getShowSkillLevel() {
+        return showSkillLevel;
+    }
+
+    public void setShowSkillLevel(Boolean showSkillLevel) {
+        this.showSkillLevel = showSkillLevel;
     }
 }

@@ -10,6 +10,7 @@ public class UserResponse {
     private String bio;
     private String profileImageUrl;
     private List<UserSkillResponse> skills;
+    private Boolean showSkillLevel;
 
     public UserResponse() {
     }
@@ -83,5 +84,13 @@ public class UserResponse {
 
     public void setSkills(List<UserSkillResponse> skills) {
         this.skills = skills;
+    }
+
+    public Boolean getShowSkillLevel() {
+        return showSkillLevel;
+    }
+
+    public void setShowSkillLevel(Boolean showSkillLevel) {
+        this.showSkillLevel = showSkillLevel;
     }
 }

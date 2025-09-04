@@ -48,6 +48,7 @@ public class PortfolioService {
             user.getProfileImageUrl()
         );
         response.setSkills(userSkills);
+        response.setShowSkillLevel(user.getShowSkillLevel());
         
         return response;
     }
@@ -61,10 +62,16 @@ public class PortfolioService {
         user.setEmail(request.getEmail());
         user.setJobTitle(request.getJobTitle());
         user.setBio(request.getBio());
+        if (request.getShowSkillLevel() != null) {
+            user.setShowSkillLevel(request.getShowSkillLevel());
+        }
 
         user = userRepository.save(user);
 
-        return new UserResponse(
+        // Get user skills for response
+        List<UserSkillResponse> userSkills = skillService.getUserSkills(user.getId());
+
+        UserResponse response = new UserResponse(
             user.getId(),
             user.getName(),
             user.getEmail(),
@@ -72,6 +79,10 @@ public class PortfolioService {
             user.getBio(),
             user.getProfileImageUrl()
         );
+        response.setSkills(userSkills);
+        response.setShowSkillLevel(user.getShowSkillLevel());
+        
+        return response;
     }
 
     @Transactional

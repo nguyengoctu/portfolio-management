@@ -42,7 +42,8 @@ export class ProfileSettingsComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       jobTitle: [''],
-      bio: ['', [Validators.maxLength(500)]]
+      bio: ['', [Validators.maxLength(500)]],
+      showSkillLevel: [true]
     });
   }
 
@@ -60,7 +61,8 @@ export class ProfileSettingsComponent implements OnInit {
           name: profile.name,
           email: profile.email,
           jobTitle: profile.jobTitle || '',
-          bio: profile.bio || ''
+          bio: profile.bio || '',
+          showSkillLevel: profile.showSkillLevel !== false
         });
         this.loading = false;
       },
