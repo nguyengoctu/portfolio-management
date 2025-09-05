@@ -22,11 +22,11 @@ export class ProfileSettingsComponent implements OnInit {
   saving: boolean = false;
   message: string = '';
   messageType: 'success' | 'error' = 'success';
-  
+
   selectedFile: File | null = null;
   uploadingImage: boolean = false;
   previewUrl: string | null = null;
-  
+
   // Skills related properties
   userSkills: UserSkill[] = [];
   showSkillSelector: boolean = false;
@@ -86,13 +86,13 @@ export class ProfileSettingsComponent implements OnInit {
       }
 
       // Validate file size (2MB max)
-      if (file.size > 2 * 1024 * 1024) {
-        this.showMessage('Image size must be less than 2MB', 'error');
+      if (file.size > 10 * 1024 * 1024) {
+        this.showMessage('Image size must be less than 10MB', 'error');
         return;
       }
 
       this.selectedFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -113,7 +113,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.selectedFile = null;
         this.previewUrl = null;
         this.uploadingImage = false;
-        
+
         // Reset file input
         const fileInput = document.getElementById('profileImage') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
@@ -129,7 +129,7 @@ export class ProfileSettingsComponent implements OnInit {
   deleteImage() {
     this.selectedFile = null;
     this.previewUrl = null;
-    
+
     // Reset file input
     const fileInput = document.getElementById('profileImage') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
@@ -141,7 +141,7 @@ export class ProfileSettingsComponent implements OnInit {
       this.message = '';
 
       const profileData = this.profileForm.value;
-      
+
       this.portfolioService.updateProfile(profileData).subscribe({
         next: (updatedProfile) => {
           this.userProfile = updatedProfile;
@@ -162,7 +162,7 @@ export class ProfileSettingsComponent implements OnInit {
   showMessage(message: string, type: 'success' | 'error') {
     this.message = message;
     this.messageType = type;
-    
+
     // Auto hide message after 5 seconds
     setTimeout(() => {
       this.message = '';

@@ -30,6 +30,9 @@ public class UserController {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    @Value("${APP_URL:${minio.url}}")
+    private String appUrl;
+
     @GetMapping("/profile")
     public ResponseEntity<UserResponse> getUserProfile(@RequestHeader("Authorization") String authorizationHeader) {
         try {
@@ -75,8 +78,10 @@ public class UserController {
             List<User> popularUsers = userRepository.findTopUsersByPortfolioViews(limit);
             List<UserResponse> userResponses = popularUsers.stream()
                     .map(user -> {
+                        String fullProfileImageUrl = user.getProfileImageUrl() != null ? 
+                            appUrl + "/minio" + user.getProfileImageUrl() : null;
                         UserResponse response = new UserResponse(user.getId(), user.getName(), user.getEmail(),
-                                user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+                                user.getJobTitle(), user.getBio(), fullProfileImageUrl);
                         response.setPortfolioViews(user.getPortfolioViews());
                         response.setIsPortfolioPublic(user.getIsPortfolioPublic());
                         return response;

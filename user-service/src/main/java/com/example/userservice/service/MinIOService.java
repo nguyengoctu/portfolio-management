@@ -104,8 +104,8 @@ public class MinIOService {
             );
         }
         
-        // Return public URL accessible from browser
-        return minioPublicUrl + "/" + BUCKET_NAME + "/" + filename;
+        // Return path only, not full URL
+        return "/" + BUCKET_NAME + "/" + filename;
     }
 
     public void deleteFile(String fileUrl) {
