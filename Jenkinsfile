@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'BRANCH', defaultValue: 'auth-service', description: 'Git branch to checkout')
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to checkout')
     }
     environment {
         // Load from Jenkins Credentials Store
@@ -17,6 +17,7 @@ pipeline {
         VM_HOST = "${env.VM_HOST ?: '192.168.56.50'}"
         VM_USER = "${env.VM_USER ?: 'deploy'}"
         VM_PORT = "${env.VM_PORT ?: '22'}"
+        APP_URL="${env.APP_URL ?: 'http://nationally-premium-bonefish.ngrok-free.app'}"
     }
     
     stages {
@@ -61,6 +62,7 @@ pipeline {
                     export GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID"
                     export GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET"
                     export VM_HOST="$VM_HOST"
+                    export APP_URL="$APP_URL"
                     
                     # Replace only DOCKER_USER and TAG in image names (still needed for image references)
                     sed -i "s/DOCKER_USER/$DOCKERHUB_CREDENTIALS_USR/g" docker-compose.yml
@@ -105,6 +107,9 @@ pipeline {
                         export JWT_EXPIRATION="$JWT_EXPIRATION"
                         export MAIL_PASSWORD="$MAIL_PASSWORD"
                         export VM_HOST="$VM_HOST"
+                        export APP_URL="$APP_URL"
+                        export GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID"
+                        export GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET"
                         
                         # Replace placeholders in docker-compose.yml
                         sed -i "s/DOCKER_USER/$DOCKER_USER/g" docker-compose.yml
@@ -131,6 +136,9 @@ pipeline {
                     mkdir -p ~/.ssh
                     cp "$VM_SSH_KEY" ~/.ssh/vm_key
                     chmod 600 ~/.ssh/vm_key
+
+                    # Terminate existing ngrok processes on VM  
+                    ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "killall ngrok 2>/dev/null || true"
                     
                     # Clean and create deploy directory on VM
                     ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "rm -rf ~/deploy/portfolio-management && mkdir -p ~/deploy/portfolio-management"
@@ -138,6 +146,8 @@ pipeline {
                     # Copy docker-compose.yml and mysql-init to VM
                     scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT docker-compose.yml $VM_USER@$VM_HOST:~/deploy/portfolio-management/docker-compose.yml
                     
+                    scp -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -P $VM_PORT -r db/ $VM_USER@$VM_HOST:~/deploy/portfolio-management/
+
                     # Deploy on VM with environment variables
                     ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "
                         cd ~/deploy/portfolio-management && 
@@ -146,6 +156,9 @@ pipeline {
                         export JWT_EXPIRATION='$JWT_EXPIRATION' &&
                         export MAIL_PASSWORD='$MAIL_PASSWORD' &&
                         export VM_HOST='$VM_HOST' &&
+                        export APP_URL='$APP_URL' &&
+                        export GITHUB_CLIENT_ID='$GITHUB_CLIENT_ID' &&
+                        export GITHUB_CLIENT_SECRET='$GITHUB_CLIENT_SECRET' &&
                         echo 'Environment variables set' &&
                         echo 'Stopping existing containers...' &&
                         docker compose down --remove-orphans || true &&
@@ -155,30 +168,12 @@ pipeline {
                         docker compose up -d &&
                         echo 'Deployment completed successfully!'
                     "
-                    
+
+                    # run ngrok 
+                    ssh -i ~/.ssh/vm_key -o StrictHostKeyChecking=no -p $VM_PORT $VM_USER@$VM_HOST "nohup ngrok http --url=nationally-premium-bonefish.ngrok-free.app 3000 > /dev/null 2>&1 & disown"
                     # Clean up SSH key
                     rm -f ~/.ssh/vm_key
                 '''
-            }
-        }
-        
-        stage('Health Check') {
-            steps {
-                script {
-                    sh '''
-                        sleep 30
-                        docker compose ps
-                        
-                        # Test auth service health
-                        curl -f http://localhost:8082/api/health || echo "Auth service not ready yet"
-                        
-                        # Test user service health
-                        curl -f http://localhost:8083/api/health || echo "User service not ready yet"
-                        
-                        # Test frontend health  
-                        curl -f http://localhost:3000 || echo "Frontend not ready yet"
-                    '''
-                }
             }
         }
     }
