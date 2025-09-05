@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { PortfolioService, UserProfile } from '../../services/portfolio.service';
+import { OnlineUsersComponent } from '../online-users/online-users.component';
+import { ChatWindowComponent } from '../chat-window/chat-window.component';
+import { WebSocketService, OnlineUser } from '../../services/websocket.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, OnlineUsersComponent, ChatWindowComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -18,12 +21,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showUserMenu: boolean = false;
   isLoggedIn: boolean = false;
   shouldShowHeader: boolean = true;
+  
+  // Chat functionality
+  openChatWindows: { user: OnlineUser, isMinimized: boolean }[] = [];
+  
   private routeSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
     private portfolioService: PortfolioService,
-    private router: Router
+    private router: Router,
+    private websocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -136,5 +144,43 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   getProfileImageUrl(): string {
     return this.userProfile?.profileImageUrl || '/assets/default-avatar.png';
+  }
+
+  // Chat methods
+  onStartChat(user: OnlineUser): void {
+    // Check if chat window already exists
+    const existingWindow = this.openChatWindows.find(w => w.user.id === user.id);
+    if (existingWindow) {
+      // If minimized, restore it
+      existingWindow.isMinimized = false;
+      return;
+    }
+
+    // Add new chat window (max 3 windows)
+    if (this.openChatWindows.length >= 3) {
+      this.openChatWindows.shift(); // Remove oldest window
+    }
+    
+    this.openChatWindows.push({
+      user: user,
+      isMinimized: false
+    });
+  }
+
+  onCloseChat(userId: number): void {
+    this.openChatWindows = this.openChatWindows.filter(w => w.user.id !== userId);
+  }
+
+  onMinimizeChat(userId: number): void {
+    const window = this.openChatWindows.find(w => w.user.id === userId);
+    if (window) {
+      window.isMinimized = !window.isMinimized;
+    }
+  }
+
+  getChatWindowPosition(index: number): string {
+    const baseRight = 20; // Base right position
+    const windowWidth = 370; // Chat window width + margin
+    return `${baseRight + (index * windowWidth)}px`;
   }
 }
