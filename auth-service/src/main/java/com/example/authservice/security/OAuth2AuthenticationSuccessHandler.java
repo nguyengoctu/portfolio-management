@@ -22,7 +22,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${APP_URL}")
+    @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
     @Override

@@ -58,6 +58,6 @@ export class RegisterFormComponent {
   }
 
   signUpWithGithub() {
-    window.location.href = `${environment.authUrl}/oauth2/authorization/github`;
+    window.location.href = `/oauth2/authorization/github`;
   }
 }

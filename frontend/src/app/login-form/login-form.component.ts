@@ -67,6 +67,6 @@ export class LoginFormComponent {
 
   loginWithGitHub() {
     this.isGitHubLoading = true;
-    window.location.href = `${environment.authUrl}/oauth2/authorize/github`;
+    window.location.href = `/oauth2/authorization/github`;
   }
 }
