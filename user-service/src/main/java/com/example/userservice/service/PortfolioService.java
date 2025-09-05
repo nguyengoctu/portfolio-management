@@ -12,6 +12,7 @@ import com.example.userservice.repository.ProjectRepository;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.repository.PortfolioViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,9 @@ public class PortfolioService {
     @Autowired
     private SkillService skillService;
 
+    @Value("${APP_URL:${minio.url}}")
+    private String appUrl;
+
     public UserResponse getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,13 +49,16 @@ public class PortfolioService {
         // Get user skills
         List<UserSkillResponse> userSkills = skillService.getUserSkills(userId);
         
+        String fullProfileImageUrl = user.getProfileImageUrl() != null ? 
+            appUrl + "/minio" + user.getProfileImageUrl() : null;
+        
         UserResponse response = new UserResponse(
             user.getId(),
             user.getName(),
             user.getEmail(),
             user.getJobTitle(),
             user.getBio(),
-            user.getProfileImageUrl()
+            fullProfileImageUrl
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
@@ -82,13 +89,16 @@ public class PortfolioService {
         // Get user skills for response
         List<UserSkillResponse> userSkills = skillService.getUserSkills(user.getId());
 
+        String fullProfileImageUrl = user.getProfileImageUrl() != null ? 
+            appUrl + "/minio" + user.getProfileImageUrl() : null;
+
         UserResponse response = new UserResponse(
             user.getId(),
             user.getName(),
             user.getEmail(),
             user.getJobTitle(),
             user.getBio(),
-            user.getProfileImageUrl()
+            fullProfileImageUrl
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
@@ -194,7 +204,11 @@ public class PortfolioService {
         response.setDescription(project.getDescription());
         response.setDemoUrl(project.getDemoUrl());
         response.setRepositoryUrl(project.getRepositoryUrl());
-        response.setImageUrl(project.getImageUrl());
+        
+        String fullImageUrl = project.getImageUrl() != null ? 
+            appUrl + "/minio" + project.getImageUrl() : null;
+        response.setImageUrl(fullImageUrl);
+        
         response.setCreatedAt(project.getCreatedAt());
         response.setUpdatedAt(project.getUpdatedAt());
         return response;

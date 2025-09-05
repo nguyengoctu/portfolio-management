@@ -10,6 +10,7 @@ import com.example.userservice.service.ContactService;
 import com.example.userservice.service.PortfolioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,9 @@ public class PortfolioController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Value("${APP_URL:${minio.url}}")
+    private String appUrl;
 
     private Long extractUserIdFromToken(String token) {
         if (token != null && token.startsWith("Bearer ")) {
@@ -74,9 +78,11 @@ public class PortfolioController {
             Long userId = extractUserIdFromToken(authToken);
             String imageUrl = portfolioService.uploadProfileImage(userId, file);
             
+            String fullImageUrl = imageUrl != null ? appUrl + "/minio" + imageUrl : null;
+            
             Map<String, String> response = new HashMap<>();
             response.put("message", "Profile image uploaded successfully");
-            response.put("imageUrl", imageUrl);
+            response.put("imageUrl", fullImageUrl);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
