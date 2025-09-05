@@ -56,4 +56,8 @@ export class RegisterFormComponent {
       this.isError = true;
     }
   }
+
+  signUpWithGithub() {
+    window.location.href = `${environment.authUrl}/oauth2/authorization/github`;
+  }
 }
