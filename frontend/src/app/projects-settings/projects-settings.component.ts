@@ -256,4 +256,8 @@ export class ProjectsSettingsComponent implements OnInit {
     }
     return null;
   }
+
+  trackByProjectId(index: number, project: Project): number {
+    return project.id;
+  }
 }

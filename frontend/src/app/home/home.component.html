@@ -68,7 +68,7 @@
     <!-- Portfolios Grid -->
     <div *ngIf="!loading && !error" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <div *ngFor="let portfolio of popularPortfolios" 
-           class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 border border-gray-100 flex flex-col h-full"
+           class="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border border-gray-200 flex flex-col h-full"
            [routerLink]="['/portfolio', portfolio.id]">
         
         <!-- Header with gradient -->
@@ -78,7 +78,7 @@
               <img 
                 [src]="getProfileImageUrl(portfolio)" 
                 [alt]="portfolio.name"
-                class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-white shadow-lg"
+                class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-white shadow-sm"
               />
             </div>
           </div>

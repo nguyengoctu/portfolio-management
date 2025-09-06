@@ -10,7 +10,41 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = localStorage.getItem('token');
     console.log('AuthService - Token in localStorage:', token);
-    return !!token;
+    
+    if (!token) {
+      return false;
+    }
+    
+    // Check if token is expired
+    if (this.isTokenExpired(token)) {
+      console.log('AuthService - Token is expired, logging out');
+      this.logout();
+      return false;
+    }
+    
+    return true;
+  }
+
+  // Check if JWT token is expired
+  isTokenExpired(token?: string): boolean {
+    const authToken = token || this.getToken();
+    if (!authToken) {
+      return true;
+    }
+
+    try {
+      const payload = authToken.split('.')[1];
+      const decodedPayload = atob(payload);
+      const tokenData = JSON.parse(decodedPayload);
+      
+      // JWT exp is in seconds, Date.now() is in milliseconds
+      const currentTime = Math.floor(Date.now() / 1000);
+      
+      return !tokenData.exp || tokenData.exp < currentTime;
+    } catch (error) {
+      console.error('Error checking token expiration:', error);
+      return true;
+    }
   }
 
   // You might also add login/logout methods here

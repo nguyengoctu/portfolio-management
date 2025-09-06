@@ -77,6 +77,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Failed to load user profile:', error);
+        // If JWT expired, the interceptor will handle logout and reload
+        // But also check here to be safe
+        if (error.error?.message?.includes('JWT expired')) {
+          this.authService.logout();
+          this.isLoggedIn = false;
+          this.userProfile = null;
+          // The page will reload from interceptor, showing sign in/up buttons
+        }
       }
     });
   }
