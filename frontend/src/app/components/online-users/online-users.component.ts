@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener, Eleme
 import { CommonModule } from '@angular/common';
 import { WebSocketService, OnlineUser } from '../../services/websocket.service';
 import { AuthService } from '../../auth/auth.service';
+import { GameService } from '../../services/game.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,7 +24,8 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
   constructor(
     private websocketService: WebSocketService,
     private authService: AuthService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private gameService: GameService
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +76,12 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
 
   getUnreadNotificationsCount(): number {
     return this.onlineUsers.filter(user => user.hasUnreadMessages).length;
+  }
+
+  inviteToGame(user: OnlineUser): void {
+    // Send game invitation
+    this.gameService.sendGameInvitation(user.id);
+    console.log(`Inviting ${user.name} to play Caro game`);
   }
 
   @HostListener('document:click', ['$event'])

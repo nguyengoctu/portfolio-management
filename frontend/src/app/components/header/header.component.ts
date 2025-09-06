@@ -5,6 +5,8 @@ import { AuthService } from '../../auth/auth.service';
 import { PortfolioService, UserProfile } from '../../services/portfolio.service';
 import { OnlineUsersComponent } from '../online-users/online-users.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
+import { GameWindowComponent } from '../game-window/game-window.component';
+import { GameInvitationComponent } from '../game-invitation/game-invitation.component';
 import { WebSocketService, OnlineUser } from '../../services/websocket.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -12,7 +14,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, OnlineUsersComponent, ChatWindowComponent],
+  imports: [CommonModule, RouterModule, OnlineUsersComponent, ChatWindowComponent, GameWindowComponent, GameInvitationComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

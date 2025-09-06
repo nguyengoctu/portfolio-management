@@ -1,0 +1,163 @@
+.game-invitations {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 8000;
+  max-width: 350px;
+  width: 100%;
+}
+
+.invitation-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 2px solid #4ECDC4;
+  margin-bottom: 15px;
+  overflow: hidden;
+  position: relative;
+  animation: slideIn 0.5s ease-out;
+}
+
+.invitation-header {
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  padding: 15px 20px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.game-icon {
+  font-size: 24px;
+  animation: bounce 2s infinite;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.invitation-content {
+  padding: 20px;
+}
+
+.invitation-title {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.invitation-message {
+  margin: 0 0 10px 0;
+  color: #34495e;
+  line-height: 1.4;
+}
+
+.invitation-time {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-bottom: 15px;
+}
+
+.invitation-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.btn-accept {
+  background: linear-gradient(135deg, #27AE60, #2ECC71);
+  color: white;
+}
+
+.btn-accept:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+}
+
+.btn-decline {
+  background: linear-gradient(135deg, #E74C3C, #C0392B);
+  color: white;
+}
+
+.btn-decline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .game-invitations {
+    top: 80px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .invitation-card {
+    margin-bottom: 10px;
+  }
+  
+  .invitation-content {
+    padding: 15px;
+  }
+  
+  .invitation-actions {
+    padding: 0 15px 15px;
+  }
+}

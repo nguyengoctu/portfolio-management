@@ -1,0 +1,36 @@
+<div class="game-invitations">
+  <div 
+    *ngFor="let invitation of gameInvitations" 
+    class="invitation-card animate-slide-in"
+  >
+    <div class="invitation-header">
+      <div class="game-icon">🎯</div>
+      <button (click)="closeInvitation(invitation.gameId)" class="close-btn">×</button>
+    </div>
+    
+    <div class="invitation-content">
+      <h4 class="invitation-title">Game Invitation!</h4>
+      <p class="invitation-message">
+        <strong>{{ invitation.fromUser.name }}</strong> wants to play Caro with you
+      </p>
+      <div class="invitation-time">
+        {{ invitation.timestamp | date:'short' }}
+      </div>
+    </div>
+    
+    <div class="invitation-actions">
+      <button 
+        (click)="acceptInvitation(invitation.gameId)" 
+        class="btn btn-accept"
+      >
+        ✅ Accept
+      </button>
+      <button 
+        (click)="declineInvitation(invitation.gameId)" 
+        class="btn btn-decline"
+      >
+        ❌ Decline
+      </button>
+    </div>
+  </div>
+</div>

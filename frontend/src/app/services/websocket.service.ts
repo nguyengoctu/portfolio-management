@@ -34,10 +34,12 @@ export class WebSocketService {
   private onlineUsersSubject = new BehaviorSubject<OnlineUser[]>([]);
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   private connectionStatusSubject = new BehaviorSubject<boolean>(false);
+  private gameMessagesSubject = new BehaviorSubject<any>(null);
 
   public onlineUsers$ = this.onlineUsersSubject.asObservable();
   public messages$ = this.messagesSubject.asObservable();
   public connectionStatus$ = this.connectionStatusSubject.asObservable();
+  public gameMessages$ = this.gameMessagesSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -147,6 +149,14 @@ export class WebSocketService {
         // Mark sender as having unread messages
         this.markUserAsHavingUnreadMessages(data.message.senderId);
         break;
+      case 'game_invitation':
+      case 'game_start':
+      case 'game_move':
+      case 'game_end':
+      case 'play_again_request':
+        // Forward game messages to any subscribed game services
+        this.handleGameMessage(data);
+        break;
     }
   }
 
@@ -189,7 +199,7 @@ export class WebSocketService {
     // Don't simulate fake responses - wait for real users
   }
 
-  private sendMessage(message: any): void {
+  sendMessage(message: any): void {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify(message));
     }
@@ -290,5 +300,10 @@ export class WebSocketService {
       return user;
     });
     this.onlineUsersSubject.next(updatedUsers);
+  }
+
+  private handleGameMessage(data: any): void {
+    console.log('Game message received:', data);
+    this.gameMessagesSubject.next(data);
   }
 }
