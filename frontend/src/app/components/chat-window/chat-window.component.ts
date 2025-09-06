@@ -136,9 +136,4 @@ export class ChatWindowComponent implements OnInit, OnDestroy, OnChanges {
     return '/assets/default-avatar.png';
   }
 
-  getUnreadCount(): number {
-    return this.messages.filter(m => 
-      m.senderId === this.chatUser.id && !m.read
-    ).length;
-  }
 }

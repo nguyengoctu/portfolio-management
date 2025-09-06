@@ -184,7 +184,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                     "senderId", chatMessage.getSenderId(),
                     "receiverId", chatMessage.getReceiverId(),
                     "message", chatMessage.getMessage(),
-                    "timestamp", chatMessage.getTimestamp(),
+                    "timestamp", chatMessage.getTimestamp().toString(),
                     "read", chatMessage.getIsRead()
                 )
             );
