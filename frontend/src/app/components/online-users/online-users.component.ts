@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WebSocketService, OnlineUser } from '../../services/websocket.service';
 import { AuthService } from '../../auth/auth.service';
@@ -22,7 +22,8 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
 
   constructor(
     private websocketService: WebSocketService,
-    private authService: AuthService
+    private authService: AuthService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -73,5 +74,12 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
 
   getUnreadNotificationsCount(): number {
     return this.onlineUsers.filter(user => user.hasUnreadMessages).length;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    if (this.showOnlineUsers && !this.elementRef.nativeElement.contains(event.target)) {
+      this.showOnlineUsers = false;
+    }
   }
 }

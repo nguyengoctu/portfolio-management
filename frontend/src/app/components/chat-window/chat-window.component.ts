@@ -109,6 +109,13 @@ export class ChatWindowComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  onChatWindowClick(): void {
+    // Clear notification when clicking anywhere in the chat window
+    if (this.chatUser) {
+      this.websocketService.clearUnreadMessages(this.chatUser.id);
+    }
+  }
+
   isMessageFromCurrentUser(message: ChatMessage): boolean {
     return message.senderId === this.currentUserId;
   }
