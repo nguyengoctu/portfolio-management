@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 export interface OnlineUser {
@@ -27,6 +28,7 @@ export class WebSocketService {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectInterval = 5000;
+  private currentUserId: number | null = null;
 
   private onlineUsersSubject = new BehaviorSubject<OnlineUser[]>([]);
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
@@ -36,9 +38,12 @@ export class WebSocketService {
   public messages$ = this.messagesSubject.asObservable();
   public connectionStatus$ = this.connectionStatusSubject.asObservable();
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   connect(userId: number): void {
+    this.currentUserId = userId;
+    console.log('Connecting WebSocket for user:', userId);
+    
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       return;
     }
@@ -55,7 +60,9 @@ export class WebSocketService {
       this.socket = new WebSocket(wsUrl);
 
       this.socket.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('WebSocket connected successfully!');
+        console.log('WebSocket URL:', wsUrl);
+        console.log('WebSocket readyState:', this.socket?.readyState);
         this.connectionStatusSubject.next(true);
         this.reconnectAttempts = 0;
         this.sendMessage({
@@ -74,7 +81,9 @@ export class WebSocketService {
       };
 
       this.socket.onclose = (event) => {
-        console.log('WebSocket disconnected', event.code, event.reason);
+        console.log('WebSocket disconnected!', event.code, event.reason);
+        console.log('WebSocket URL was:', wsUrl);
+        console.log('Connection was forced to simulation mode');
         this.connectionStatusSubject.next(false);
         
         // Fallback to simulation mode
@@ -99,8 +108,11 @@ export class WebSocketService {
   }
 
   private simulateConnection(): void {
+    console.log('=== SIMULATION MODE ACTIVATED ===');
+    console.log('WebSocket connection failed, using fallback simulation');
     // Just mark as connected, no mock users
     setTimeout(() => {
+      console.log('Simulation mode: marking as connected');
       this.connectionStatusSubject.next(true);
       // Don't add mock users - wait for real WebSocket data
       this.onlineUsersSubject.next([]);
@@ -108,8 +120,10 @@ export class WebSocketService {
   }
 
   private handleMessage(data: any): void {
+    console.log('WebSocket message received:', data);
     switch (data.type) {
       case 'online_users':
+        console.log('Online users updated:', data.users);
         this.onlineUsersSubject.next(data.users);
         break;
       case 'user_joined':
@@ -123,31 +137,40 @@ export class WebSocketService {
         this.onlineUsersSubject.next(updatedUsers);
         break;
       case 'chat_message':
+        console.log('Chat message received:', data.message);
         const currentMessages = this.messagesSubject.value;
-        this.messagesSubject.next([...currentMessages, data.message]);
+        const newMessages = [...currentMessages, data.message];
+        console.log('Updating messages from', currentMessages.length, 'to', newMessages.length);
+        this.messagesSubject.next(newMessages);
         break;
     }
   }
 
   sendChatMessage(receiverId: number, message: string): void {
+    console.log('Sending chat message to', receiverId, ':', message);
+    console.log('WebSocket state:', this.socket?.readyState);
+    
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      console.log('Sending via WebSocket');
       this.sendMessage({
         type: 'chat_message',
         receiverId: receiverId,
         message: message
       });
     } else {
-      console.warn('WebSocket not connected, cannot send message');
+      console.warn('WebSocket not connected, using simulation mode');
       // Simulate message sending for development
       this.simulateMessageSend(receiverId, message);
     }
   }
 
   private simulateMessageSend(receiverId: number, message: string): void {
+    console.log('Simulating message send to', receiverId);
+    
     // Only add the sent message, no mock response
     const mockMessage: ChatMessage = {
       id: Date.now(),
-      senderId: 1, // Current user ID  
+      senderId: this.currentUserId || 0,
       receiverId: receiverId,
       message: message,
       timestamp: new Date(),
@@ -155,7 +178,9 @@ export class WebSocketService {
     };
     
     const currentMessages = this.messagesSubject.value;
-    this.messagesSubject.next([...currentMessages, mockMessage]);
+    const newMessages = [...currentMessages, mockMessage];
+    console.log('Simulated messages from', currentMessages.length, 'to', newMessages.length);
+    this.messagesSubject.next(newMessages);
     
     // Don't simulate fake responses - wait for real users
   }
@@ -193,6 +218,35 @@ export class WebSocketService {
         ).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
         observer.next(userMessages);
       });
+    });
+  }
+
+  loadHistoricalMessages(userId: number): void {
+    if (!this.currentUserId) return;
+    
+    const url = `/api/chat/messages/${this.currentUserId}/${userId}`;
+    console.log('Loading historical messages from:', url);
+    
+    this.http.get<ChatMessage[]>(url).subscribe({
+      next: (historicalMessages: ChatMessage[]) => {
+        console.log('Loaded historical messages from backend:', historicalMessages.length);
+        
+        const currentMessages = this.messagesSubject.value;
+        const existingMessageIds = new Set(currentMessages.map(m => m.id));
+        
+        const newMessages = historicalMessages.filter((msg: ChatMessage) => !existingMessageIds.has(msg.id));
+        
+        if (newMessages.length > 0) {
+          const allMessages = [...currentMessages, ...newMessages]
+            .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+          
+          console.log('Adding historical messages to chat:', newMessages.length);
+          this.messagesSubject.next(allMessages);
+        }
+      },
+      error: (error: any) => {
+        console.error('Failed to load historical messages:', error);
+      }
     });
   }
 

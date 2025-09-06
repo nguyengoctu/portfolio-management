@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -35,4 +36,14 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     @Query("SELECT m FROM ChatMessage m WHERE m.receiverId = :receiverId ORDER BY m.timestamp DESC")
     List<ChatMessage> findMessagesByReceiver(@Param("receiverId") Long receiverId);
+
+    @Query("SELECT m FROM ChatMessage m WHERE " +
+           "(m.senderId = :userId1 AND m.receiverId = :userId2) OR " +
+           "(m.senderId = :userId2 AND m.receiverId = :userId1) " +
+           "AND m.timestamp >= :timestamp " +
+           "ORDER BY m.timestamp ASC")
+    List<ChatMessage> findMessagesBetweenUsersAfterTimestamp(
+        @Param("userId1") Long userId1, 
+        @Param("userId2") Long userId2, 
+        @Param("timestamp") LocalDateTime timestamp);
 }

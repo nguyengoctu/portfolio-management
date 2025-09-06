@@ -29,7 +29,9 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
     // Subscribe to online users
     this.subscriptions.push(
       this.websocketService.onlineUsers$.subscribe(users => {
-        this.onlineUsers = users;
+        const currentUser = this.authService.getCurrentUser();
+        // Filter out current user from the list
+        this.onlineUsers = users.filter(user => user.id !== currentUser?.id);
       })
     );
 

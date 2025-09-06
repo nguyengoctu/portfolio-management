@@ -58,6 +58,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, OnChanges {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     this.subscriptions = [];
 
+    this.websocketService.loadHistoricalMessages(this.chatUser.id);
+
     this.subscriptions.push(
       this.websocketService.getMessagesForUser(this.chatUser.id).subscribe(messages => {
         this.messages = messages;

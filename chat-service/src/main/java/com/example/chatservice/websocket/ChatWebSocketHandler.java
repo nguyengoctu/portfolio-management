@@ -123,11 +123,16 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 
                 // Send message to receiver if online
                 WebSocketSession receiverSession = getUserSession(receiverId);
+                logger.info("Looking for receiver {}, found session: {}", receiverId, receiverSession != null);
                 if (receiverSession != null) {
+                    logger.info("Sending message to receiver {}", receiverId);
                     sendChatMessageToUser(receiverSession, chatMessage);
+                } else {
+                    logger.warn("Receiver {} is not online", receiverId);
                 }
                 
                 // Send confirmation to sender
+                logger.info("Sending confirmation to sender {}", senderId);
                 sendChatMessageToUser(session, chatMessage);
                 
                 logger.info("Chat message sent from {} to {}: {}", senderId, receiverId, messageText);
@@ -171,6 +176,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
     private void sendChatMessageToUser(WebSocketSession session, ChatMessage chatMessage) {
         try {
+            logger.info("Preparing to send chat message to session {}: {}", session.getId(), chatMessage.getMessage());
             Map<String, Object> message = Map.of(
                 "type", "chat_message",
                 "message", Map.of(
@@ -183,7 +189,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 )
             );
             
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+            String messageJson = objectMapper.writeValueAsString(message);
+            logger.info("Sending WebSocket message: {}", messageJson);
+            session.sendMessage(new TextMessage(messageJson));
+            logger.info("WebSocket message sent successfully");
         } catch (IOException e) {
             logger.error("Error sending chat message to user: ", e);
         }

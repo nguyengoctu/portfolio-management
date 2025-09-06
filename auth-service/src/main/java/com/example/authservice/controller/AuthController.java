@@ -181,7 +181,12 @@ public class AuthController {
         userInfo.put("id", user.getId());
         userInfo.put("name", user.getName());
         userInfo.put("email", user.getEmail());
-        userInfo.put("profileImageUrl", user.getAvatarUrl());
+        // Add /minio prefix to profile image URL if it exists
+        String profileImageUrl = user.getProfileImageUrl();
+        if (profileImageUrl != null && !profileImageUrl.isEmpty() && !profileImageUrl.startsWith("http")) {
+            profileImageUrl = "/minio" + (profileImageUrl.startsWith("/") ? "" : "/") + profileImageUrl;
+        }
+        userInfo.put("profileImageUrl", profileImageUrl);
         
         return ResponseEntity.ok(userInfo);
     }
