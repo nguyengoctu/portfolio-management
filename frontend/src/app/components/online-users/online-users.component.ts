@@ -70,4 +70,8 @@ export class OnlineUsersComponent implements OnInit, OnDestroy {
   getOnlineCount(): number {
     return this.onlineUsers.length;
   }
+
+  getUnreadNotificationsCount(): number {
+    return this.onlineUsers.filter(user => user.hasUnreadMessages).length;
+  }
 }

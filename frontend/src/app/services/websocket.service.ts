@@ -9,6 +9,7 @@ export interface OnlineUser {
   email: string;
   profileImageUrl?: string;
   lastSeen: Date;
+  hasUnreadMessages?: boolean;
 }
 
 export interface ChatMessage {
@@ -142,6 +143,9 @@ export class WebSocketService {
         const newMessages = [...currentMessages, data.message];
         console.log('Updating messages from', currentMessages.length, 'to', newMessages.length);
         this.messagesSubject.next(newMessages);
+        
+        // Mark sender as having unread messages
+        this.markUserAsHavingUnreadMessages(data.message.senderId);
         break;
     }
   }
@@ -259,5 +263,32 @@ export class WebSocketService {
       return message;
     });
     this.messagesSubject.next(updatedMessages);
+  }
+
+  markUserAsHavingUnreadMessages(userId: number): void {
+    // Only mark as unread if it's not the current user sending the message
+    if (userId === this.currentUserId) {
+      return;
+    }
+    
+    const currentUsers = this.onlineUsersSubject.value;
+    const updatedUsers = currentUsers.map(user => {
+      if (user.id === userId) {
+        return { ...user, hasUnreadMessages: true };
+      }
+      return user;
+    });
+    this.onlineUsersSubject.next(updatedUsers);
+  }
+
+  clearUnreadMessages(userId: number): void {
+    const currentUsers = this.onlineUsersSubject.value;
+    const updatedUsers = currentUsers.map(user => {
+      if (user.id === userId) {
+        return { ...user, hasUnreadMessages: false };
+      }
+      return user;
+    });
+    this.onlineUsersSubject.next(updatedUsers);
   }
 }

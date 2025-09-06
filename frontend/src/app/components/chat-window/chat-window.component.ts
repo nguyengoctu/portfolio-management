@@ -45,6 +45,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, OnChanges {
     if (changes['chatUser'] && this.chatUser) {
       this.loadMessages();
       this.markMessagesAsRead();
+      // Clear unread notification when chat window is opened
+      this.websocketService.clearUnreadMessages(this.chatUser.id);
     }
   }
 
