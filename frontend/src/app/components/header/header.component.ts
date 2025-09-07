@@ -62,7 +62,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     console.log('Header - Auth status check:', { 
       wasLoggedIn, 
       isLoggedIn: this.isLoggedIn, 
-      token: localStorage.getItem('token') 
+      token: localStorage.getItem('accessToken') 
     });
 
     if (this.isLoggedIn && !this.userProfile) {
@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         // If JWT expired, the interceptor will handle logout and reload
         // But also check here to be safe
         if (error.error?.message?.includes('JWT expired')) {
-          this.authService.logout();
+          this.authService.logout().subscribe();
           this.isLoggedIn = false;
           this.userProfile = null;
           // The page will reload from interceptor, showing sign in/up buttons
@@ -126,11 +126,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
-    this.showUserMenu = false;
-    this.isLoggedIn = false;
-    this.userProfile = null;
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/auth/login']);
+        this.showUserMenu = false;
+        this.isLoggedIn = false;
+        this.userProfile = null;
+      },
+      error: () => {
+        // Even if logout fails on server, clear local state
+        this.router.navigate(['/auth/login']);
+        this.showUserMenu = false;
+        this.isLoggedIn = false;
+        this.userProfile = null;
+      }
+    });
   }
 
   checkRouteForHeaderVisibility() {

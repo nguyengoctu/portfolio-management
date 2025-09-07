@@ -46,8 +46,9 @@ export class OAuthRedirectComponent implements OnInit {
       const error = params['error'];
 
       if (token) {
-        // Store token and redirect to dashboard
-        this.authService.login(token);
+        // For OAuth, we might only get access token, store as both for now
+        // The backend should ideally provide both tokens
+        this.authService.login(token, '');
         this.router.navigate(['/dashboard']);
       } else if (error) {
         this.loading = false;

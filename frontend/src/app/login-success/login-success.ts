@@ -14,7 +14,14 @@ export class LoginSuccessComponent {
   constructor(private authService: AuthService, private router: Router) { }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        // Even if logout fails on server, navigate to login
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

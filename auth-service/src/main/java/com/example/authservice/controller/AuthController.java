@@ -2,12 +2,14 @@ package com.example.authservice.controller;
 
 import com.example.authservice.repository.UserRepository;
 import com.example.authservice.model.PasswordResetToken;
+import com.example.authservice.model.RefreshToken;
 import com.example.authservice.model.User;
 import com.example.authservice.repository.PasswordResetTokenRepository;
 import com.example.authservice.security.JwtUtil;
 import com.example.authservice.security.UserDetailsServiceImpl;
 import com.example.authservice.service.ForgotPasswordService;
 import com.example.authservice.service.EmailVerificationService;
+import com.example.authservice.service.RefreshTokenService;
 import com.example.authservice.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -60,6 +63,9 @@ public class AuthController {
     @Autowired
     private EmailVerificationService emailVerificationService;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
@@ -75,9 +81,10 @@ public class AuthController {
                         .body(new MessageResponse("User not found"));
             }
 
-            final String jwt = jwtUtil.generateTokenWithUser(user);
+            final String accessToken = jwtUtil.generateTokenWithUser(user);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-            return ResponseEntity.ok(new LoginResponse(jwt));
+            return ResponseEntity.ok(new LoginResponse(accessToken, refreshToken.getToken()));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("Invalid username or password"));
@@ -189,5 +196,59 @@ public class AuthController {
         userInfo.put("profileImageUrl", profileImageUrl);
         
         return ResponseEntity.ok(userInfo);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+            
+            // Check if token exists and is valid
+            Optional<RefreshToken> refreshTokenOpt = refreshTokenService.findValidToken(refreshToken);
+            if (refreshTokenOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new MessageResponse("Invalid or expired refresh token"));
+            }
+            
+            RefreshToken dbRefreshToken = refreshTokenOpt.get();
+            
+            // Check if token is blacklisted
+            if (dbRefreshToken.getIsBlacklisted()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new MessageResponse("Refresh token is blacklisted"));
+            }
+            
+            // Verify token expiration
+            if (!refreshTokenService.verifyExpiration(dbRefreshToken)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new MessageResponse("Refresh token expired"));
+            }
+            
+            // Blacklist the used refresh token (one-time use)
+            refreshTokenService.blacklistToken(refreshToken);
+            
+            User user = dbRefreshToken.getUser();
+            
+            // Generate new access token and new refresh token
+            String newAccessToken = jwtUtil.generateTokenWithUser(user);
+            RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+            
+            return ResponseEntity.ok(new LoginResponse(newAccessToken, newRefreshToken.getToken()));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Token refresh failed"));
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody RefreshTokenRequest request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+            refreshTokenService.blacklistToken(refreshToken);
+            return ResponseEntity.ok(new MessageResponse("Successfully logged out"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new MessageResponse("Logout completed"));
+        }
     }
 }

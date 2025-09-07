@@ -40,8 +40,8 @@ export class LoginFormComponent {
         .subscribe({
           next: (response) => {
             console.log('Login successful. Backend response:', response);
-            console.log('JWT from backend:', response.jwt);
-            this.authService.login(response.jwt);
+            console.log('Access token from backend:', response.accessToken);
+            this.authService.login(response.accessToken, response.refreshToken);
             console.log('Is logged in after setting token:', this.authService.isLoggedIn());
             this.isLoading = false;
             this.router.navigate(['/dashboard']);
