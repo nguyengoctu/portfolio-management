@@ -43,12 +43,12 @@ export class OAuthRedirectComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const token = params['token'];
+      const refreshToken = params['refreshToken'];
       const error = params['error'];
 
       if (token) {
-        // For OAuth, we might only get access token, store as both for now
-        // The backend should ideally provide both tokens
-        this.authService.login(token, '');
+        // Store both access token and refresh token from OAuth login
+        this.authService.login(token, refreshToken || '');
         this.router.navigate(['/dashboard']);
       } else if (error) {
         this.loading = false;

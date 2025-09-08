@@ -1,7 +1,9 @@
 package com.example.authservice.security;
 
 import com.example.authservice.model.User;
+import com.example.authservice.model.RefreshToken;
 import com.example.authservice.service.CustomOAuth2User;
+import com.example.authservice.service.RefreshTokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +24,9 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     @Value("${APP_URL:http://localhost:3000}")
     private String frontendUrl;
 
@@ -32,12 +37,14 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         User user = customOAuth2User.getUser();
         
-        // Generate JWT token for the user
-        String jwt = jwtUtil.generateTokenWithUser(user);
+        // Generate JWT token and refresh token for the user
+        String accessToken = jwtUtil.generateTokenWithUser(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         
-        // Redirect to frontend with token
+        // Redirect to frontend with both tokens
         String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/auth/oauth2/redirect")
-                .queryParam("token", jwt)
+                .queryParam("token", accessToken)
+                .queryParam("refreshToken", refreshToken.getToken())
                 .queryParam("error", "")
                 .build().toUriString();
 
