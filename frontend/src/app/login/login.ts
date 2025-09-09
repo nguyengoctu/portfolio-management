@@ -32,8 +32,8 @@ export class LoginComponent {
       this.http.post<any>(`${environment.authUrl}/login`, this.loginForm.value)
         .subscribe(response => {
           console.log('Login successful. Backend response:', response);
-          console.log('JWT from backend:', response.jwt);
-          this.authService.login(response.jwt); // Store the JWT token
+          console.log('Access token from backend:', response.accessToken);
+          this.authService.login(response.accessToken, response.refreshToken); // Store both tokens
           console.log('Is logged in after setting token:', this.authService.isLoggedIn());
           this.router.navigate(['/dashboard']);
         }, error => {

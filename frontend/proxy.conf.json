@@ -23,5 +23,18 @@
     "pathRewrite": {
       "^/api/email": "/api/email"
     }
+  },
+  "/api/chat/*": {
+    "target": "http://localhost:8084",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/ws": {
+    "target": "http://localhost:8084",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
+    "logLevel": "debug"
   }
 }

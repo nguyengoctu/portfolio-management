@@ -1,17 +1,11 @@
 package com.example.authservice.dto;
 
+import lombok.Data;
+import lombok.AllArgsConstructor;
+
+@Data
+@AllArgsConstructor
 public class LoginResponse {
-    private String jwt;
-
-    public LoginResponse(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
+    private String accessToken;
+    private String refreshToken;
 }

@@ -43,7 +43,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/forgot-password", 
                                 "/api/auth/reset-password", "/api/auth/verify-email", "/api/auth/resend-verification",
-                                "/oauth2/**", "/login/oauth2/**").permitAll()
+                                "/api/auth/refresh-token", "/api/auth/logout",
+                                "/api/auth/user/**", "/oauth2/**", "/login/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

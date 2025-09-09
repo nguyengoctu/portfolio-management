@@ -12,6 +12,7 @@ node_modules/
 dist/
 build/
 target/
+bin/
 
 # IDE files
 .vscode/

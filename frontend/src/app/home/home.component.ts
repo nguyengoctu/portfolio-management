@@ -11,6 +11,7 @@ export interface PopularPortfolio {
   jobTitle?: string;
   bio?: string;
   profileImageUrl?: string;
+  avatarUrl?: string;
   portfolioViews: number;
   isPortfolioPublic?: boolean;
 }
@@ -51,6 +52,6 @@ export class HomeComponent implements OnInit {
   }
 
   getProfileImageUrl(portfolio: PopularPortfolio): string {
-    return portfolio.profileImageUrl || '/assets/default-avatar.png';
+    return portfolio.profileImageUrl || portfolio.avatarUrl || '/assets/default-avatar.png';
   }
 }

@@ -58,7 +58,7 @@ export class PortfolioViewComponent implements OnInit {
   }
 
   getProfileImageUrl(): string {
-    return this.userProfile?.profileImageUrl || '/assets/default-avatar.png';
+    return this.userProfile?.profileImageUrl || this.userProfile?.avatarUrl || '/assets/default-avatar.png';
   }
 
   getProjectImageUrl(project: Project): string {

@@ -1,4 +1,4 @@
-<header class="bg-white shadow-sm border-b" *ngIf="shouldShowHeader">
+<header class="bg-gradient-to-r from-slate-50 to-indigo-50 shadow-lg border-b border-indigo-100" *ngIf="shouldShowHeader">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <!-- Logo -->
@@ -8,18 +8,24 @@
         </div>
       </div>
 
-      <!-- User Menu (when logged in) -->
-      <div class="relative" *ngIf="isLoggedIn && userProfile">
-        <button
-          (click)="toggleUserMenu()"
-          class="user-menu-button flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          <img
-            [src]="getProfileImageUrl()"
-            [alt]="userProfile.name"
-            class="h-8 w-8 rounded-full object-cover"
-          />
-        </button>
+      <!-- Online Users and User Menu (when logged in) -->
+      <div class="flex items-center space-x-4" *ngIf="isLoggedIn && userProfile">
+        <!-- Online Users Component -->
+        <app-online-users (startChat)="onStartChat($event)"></app-online-users>
+        
+        <!-- User Menu -->
+        <div class="relative">
+          <button
+            (click)="toggleUserMenu()"
+            class="user-menu-button flex items-center space-x-3 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-full px-2 py-1 hover:bg-gray-50"
+          >
+            <span class="text-gray-700 font-medium">{{ userProfile.name }}</span>
+            <img
+              [src]="getProfileImageUrl()"
+              [alt]="userProfile.name"
+              class="h-8 w-8 rounded-full object-cover"
+            />
+          </button>
 
         <!-- Dropdown Menu -->
         <div
@@ -80,6 +86,7 @@
             </button>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Auth Buttons (when not logged in) -->
@@ -99,4 +106,20 @@
       </div>
     </div>
   </div>
+
+  <!-- Chat Windows -->
+  <div class="chat-windows-container" *ngIf="isLoggedIn">
+    <app-chat-window
+      *ngFor="let chatWindow of openChatWindows; let i = index"
+      [chatUser]="chatWindow.user"
+      [isMinimized]="chatWindow.isMinimized"
+      [style.right]="getChatWindowPosition(i)"
+      (close)="onCloseChat(chatWindow.user.id)"
+      (minimize)="onMinimizeChat(chatWindow.user.id)"
+    ></app-chat-window>
+  </div>
 </header>
+
+<!-- Game Components -->
+<app-game-window></app-game-window>
+<app-game-invitation></app-game-invitation>

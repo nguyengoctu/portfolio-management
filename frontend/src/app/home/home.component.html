@@ -1,6 +1,20 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Hero Section -->
-  <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+<div class="min-h-screen bg-white relative overflow-hidden">
+  <!-- Clean geometric background pattern -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Grid pattern -->
+    <div class="absolute inset-0 opacity-[0.03]" 
+         style="background-image: radial-gradient(circle at 1px 1px, rgb(99 102 241) 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <!-- Subtle gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-transparent to-purple-50/50"></div>
+    
+    <!-- Minimal accent lines -->
+    <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-indigo-100 to-transparent opacity-30"></div>
+    <div class="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-purple-100 to-transparent opacity-30"></div>
+    <div class="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-100 to-transparent opacity-30"></div>
+  </div>
+  <!-- Hero Section - Hidden -->
+  <!-- <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white">
     <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
       <div class="text-center">
         <h1 class="text-4xl font-bold tracking-tight sm:text-6xl">
@@ -11,16 +25,22 @@
         </p>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Popular Portfolios Section -->
-  <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+  <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-4">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        </svg>
+        Showcase
+      </div>
+      <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-4">
         Popular Portfolios
       </h2>
-      <p class="mt-4 text-lg text-gray-600">
-        Check out the most popular portfolios from our community
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Discover inspiring work from talented developers and designers in our community
       </p>
     </div>
 
@@ -48,37 +68,45 @@
     <!-- Portfolios Grid -->
     <div *ngIf="!loading && !error" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <div *ngFor="let portfolio of popularPortfolios" 
-           class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+           class="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border border-gray-200 flex flex-col h-full"
            [routerLink]="['/portfolio', portfolio.id]">
         
-        <!-- Profile Image -->
-        <div class="p-6 text-center">
-          <img 
-            [src]="getProfileImageUrl(portfolio)" 
-            [alt]="portfolio.name"
-            class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200"
-          />
+        <!-- Header with gradient -->
+        <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-6 rounded-t-2xl">
+          <div class="text-center">
+            <div class="relative inline-block">
+              <img 
+                [src]="getProfileImageUrl(portfolio)" 
+                [alt]="portfolio.name"
+                class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-white shadow-sm"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Content -->
-        <div class="px-6 pb-6">
-          <div class="text-center">
-            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ portfolio.name }}</h3>
-            <p *ngIf="portfolio.jobTitle" class="text-sm text-blue-600 mb-3">{{ portfolio.jobTitle }}</p>
-            <p *ngIf="portfolio.bio" class="text-sm text-gray-600 mb-4 line-clamp-2">{{ portfolio.bio }}</p>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="text-center flex-1 flex flex-col">
+            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">{{ portfolio.name }}</h3>
+            <p *ngIf="portfolio.jobTitle" class="text-sm font-medium text-indigo-600 mb-3 bg-indigo-50 px-3 py-1 rounded-full inline-block">{{ portfolio.jobTitle }}</p>
+            <p *ngIf="portfolio.bio" class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed flex-1">{{ portfolio.bio }}</p>
             
-            <!-- Stats -->
-            <div class="flex justify-center items-center space-x-4 text-xs text-gray-500">
-              <div class="flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Stats - Always at bottom -->
+            <div class="flex justify-center items-center mt-auto pt-4 border-t border-gray-100">
+              <div class="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
-                {{ portfolio.portfolioViews | number }} views
+                <span class="font-medium">{{ portfolio.portfolioViews | number }}</span>
+                <span class="ml-1">views</span>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Hover effect overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl"></div>
       </div>
     </div>
 
@@ -95,8 +123,8 @@
   </div>
 
   <!-- Call to Action - Only show if not logged in -->
-  <div *ngIf="!isLoggedIn" class="bg-blue-600 text-white">
-    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+  <div *ngIf="!isLoggedIn" class="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white relative z-10">
+    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center relative">
       <h2 class="text-3xl font-bold tracking-tight mb-4">Ready to showcase your work?</h2>
       <p class="text-lg text-blue-100 mb-8">Create your own portfolio and join our community</p>
       <div class="space-x-4">

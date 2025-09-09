@@ -4,7 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class ContactMessageRequest {
     
     @NotNull(message = "Recipient ID is required")
@@ -26,56 +31,12 @@ public class ContactMessageRequest {
     @Size(min = 10, max = 1000, message = "Message must be between 10 and 1000 characters")
     private String message;
 
-    // Default constructor
-    public ContactMessageRequest() {}
-
     // Constructor with parameters
     public ContactMessageRequest(Long recipientId, String senderEmail, String senderName, String subject, String message) {
         this.recipientId = recipientId;
         this.senderEmail = senderEmail;
         this.senderName = senderName;
         this.subject = subject;
-        this.message = message;
-    }
-
-    // Getters and setters
-    public Long getRecipientId() {
-        return recipientId;
-    }
-
-    public void setRecipientId(Long recipientId) {
-        this.recipientId = recipientId;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
         this.message = message;
     }
 }

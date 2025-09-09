@@ -1,1 +1,13 @@
 /* Header component styles */
+
+.chat-windows-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.chat-windows-container app-chat-window {
+  pointer-events: all;
+}

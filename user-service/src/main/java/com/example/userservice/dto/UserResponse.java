@@ -1,7 +1,12 @@
 package com.example.userservice.dto;
 
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class UserResponse {
     private Long id;
     private String name;
@@ -9,13 +14,11 @@ public class UserResponse {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private String avatarUrl;
     private List<UserSkillResponse> skills;
     private Boolean showSkillLevel;
     private Long portfolioViews;
     private Boolean isPortfolioPublic;
-
-    public UserResponse() {
-    }
 
     public UserResponse(Long id, String name, String email) {
         this.id = id;
@@ -32,83 +35,13 @@ public class UserResponse {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public UserResponse(Long id, String name, String email, String jobTitle, String bio, String profileImageUrl, String avatarUrl) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
-    public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
         this.bio = bio;
-    }
-
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
-    }
-
-    public List<UserSkillResponse> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<UserSkillResponse> skills) {
-        this.skills = skills;
-    }
-
-    public Boolean getShowSkillLevel() {
-        return showSkillLevel;
-    }
-
-    public void setShowSkillLevel(Boolean showSkillLevel) {
-        this.showSkillLevel = showSkillLevel;
-    }
-
-    public Long getPortfolioViews() {
-        return portfolioViews;
-    }
-
-    public void setPortfolioViews(Long portfolioViews) {
-        this.portfolioViews = portfolioViews;
-    }
-
-    public Boolean getIsPortfolioPublic() {
-        return isPortfolioPublic;
-    }
-
-    public void setIsPortfolioPublic(Boolean isPortfolioPublic) {
-        this.isPortfolioPublic = isPortfolioPublic;
+        this.avatarUrl = avatarUrl;
     }
 }

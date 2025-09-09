@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   // Base paths - check runtime env first
   authUrl: `${getBaseUrl()}/api/auth`,
+  authServiceUrl: getBaseUrl(),
   userUrl: `${getBaseUrl()}/api/user/users`,
   skillsUrl: `${getBaseUrl()}/api/user/skills`,
   backendUrl: `${getBaseUrl()}/api/auth`

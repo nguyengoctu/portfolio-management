@@ -1,0 +1,19 @@
+<div class="game-board-container">
+  <div class="game-board">
+    <div 
+      *ngFor="let row of board; let rowIndex = index" 
+      class="board-row"
+    >
+      <div
+        *ngFor="let cell of row; let colIndex = index"
+        [class]="getCellClass(rowIndex, colIndex)"
+        (click)="onCellClick(rowIndex, colIndex)"
+      >
+        <div class="cell-content">
+          <span *ngIf="cell === 'X'" class="symbol symbol-x">×</span>
+          <span *ngIf="cell === 'O'" class="symbol symbol-o">○</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
