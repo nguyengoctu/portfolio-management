@@ -20,6 +20,7 @@ public class User {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private String avatarUrl;
     private Boolean showSkillLevel = true;
     private Long portfolioViews = 0L;
     private Boolean isPortfolioPublic = true;

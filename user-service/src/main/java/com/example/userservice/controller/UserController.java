@@ -45,7 +45,7 @@ public class UserController {
             }
             
             UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(),
-                    user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+                    user.getJobTitle(), user.getBio(), user.getProfileImageUrl(), user.getAvatarUrl());
             userResponse.setSkills(skillService.getUserSkills(user.getId()));
             return ResponseEntity.ok(userResponse);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class UserController {
         return userRepository.findById(id)
                 .map(user -> {
                     UserResponse userResponse = new UserResponse(user.getId(), user.getName(), user.getEmail(),
-                            user.getJobTitle(), user.getBio(), user.getProfileImageUrl());
+                            user.getJobTitle(), user.getBio(), user.getProfileImageUrl(), user.getAvatarUrl());
                     userResponse.setSkills(skillService.getUserSkills(user.getId()));
                     return ResponseEntity.ok(userResponse);
                 })
@@ -81,7 +81,7 @@ public class UserController {
                         String fullProfileImageUrl = user.getProfileImageUrl() != null ? 
                             appUrl + "/minio" + user.getProfileImageUrl() : null;
                         UserResponse response = new UserResponse(user.getId(), user.getName(), user.getEmail(),
-                                user.getJobTitle(), user.getBio(), fullProfileImageUrl);
+                                user.getJobTitle(), user.getBio(), fullProfileImageUrl, user.getAvatarUrl());
                         response.setPortfolioViews(user.getPortfolioViews());
                         response.setIsPortfolioPublic(user.getIsPortfolioPublic());
                         return response;

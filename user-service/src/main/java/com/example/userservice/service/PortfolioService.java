@@ -58,7 +58,8 @@ public class PortfolioService {
             user.getEmail(),
             user.getJobTitle(),
             user.getBio(),
-            fullProfileImageUrl
+            fullProfileImageUrl,
+            user.getAvatarUrl()
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());
@@ -98,7 +99,8 @@ public class PortfolioService {
             user.getEmail(),
             user.getJobTitle(),
             user.getBio(),
-            fullProfileImageUrl
+            fullProfileImageUrl,
+            user.getAvatarUrl()
         );
         response.setSkills(userSkills);
         response.setShowSkillLevel(user.getShowSkillLevel());

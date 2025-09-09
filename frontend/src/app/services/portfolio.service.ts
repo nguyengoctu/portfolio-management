@@ -11,6 +11,7 @@ export interface UserProfile {
   jobTitle?: string;
   bio?: string;
   profileImageUrl?: string;
+  avatarUrl?: string;
   skills?: UserSkill[];
   showSkillLevel?: boolean;
   portfolioViews?: number;

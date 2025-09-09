@@ -14,6 +14,7 @@ public class UserResponse {
     private String jobTitle;
     private String bio;
     private String profileImageUrl;
+    private String avatarUrl;
     private List<UserSkillResponse> skills;
     private Boolean showSkillLevel;
     private Long portfolioViews;
@@ -32,5 +33,15 @@ public class UserResponse {
         this.jobTitle = jobTitle;
         this.bio = bio;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public UserResponse(Long id, String name, String email, String jobTitle, String bio, String profileImageUrl, String avatarUrl) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.jobTitle = jobTitle;
+        this.bio = bio;
+        this.profileImageUrl = profileImageUrl;
+        this.avatarUrl = avatarUrl;
     }
 }

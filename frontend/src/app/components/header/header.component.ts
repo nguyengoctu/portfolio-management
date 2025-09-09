@@ -163,7 +163,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getProfileImageUrl(): string {
-    return this.userProfile?.profileImageUrl || '/assets/default-avatar.png';
+    return this.userProfile?.profileImageUrl || this.userProfile?.avatarUrl || '/assets/default-avatar.png';
   }
 
   // Chat methods
