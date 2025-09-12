@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: portfolio-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: portfolio-management-auth-service:latest
+          ports: 
+            - containerPort: 8082
+          env:
+            - name: spring.datasource.url
+              value: jdbc:mysql://host.minikube.internal:3307/portfolio
+            - name: spring.datasource.username
+              value: user
+            - name: spring.datasource.password
+              value: password
+            - name: JWT_SECRET
+              value: bXlWZXJ5U2VjcmV0S2V5VGhhdElzMzJDaGFyc0xvbmcxMjM0NTY3ODlBQkM=
+            - name: JWT_EXPIRATION
+              value: "300000"
+            - name: JWT_REFRESH_EXPIRATION
+              value: "604800000"
+            - name: APP_URL
+              value: https://nationally-premium-bonefish.ngrok-free.app
+            - name: email.service.url
+              value: http://email-service:8081
+            - name: GITHUB_CLIENT_ID
+              value: Ov23liUZJJsVSoeI28cr
+            - name: GITHUB_CLIENT_SECRET
+              value: 0609b50f69fd0c8ea12f06bdfbe02db83c843fcf

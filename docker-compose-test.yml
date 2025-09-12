@@ -1,0 +1,42 @@
+services:
+  portfolio-db-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    networks:
+      - test-network
+
+  auth-service-test:
+    build:
+      context: ./auth-service
+      target: test
+    environment:
+      - spring.datasource.url=jdbc:mysql://portfolio-db-test:3306/portfolio
+      - spring.datasource.username=user
+      - spring.datasource.password=password
+      - JWT_SECRET=myVerySecretKeyThatIs32CharsLong123456789ABC
+      - JWT_EXPIRATION=300000
+      - JWT_REFRESH_EXPIRATION=604800000
+    depends_on:
+      portfolio-db-test:
+        condition: service_healthy
+    networks:
+      - test-network
+    volumes:
+      - ./auth-service/target/surefire-reports:/app/target/surefire-reports
+
+networks:
+  test-network:
+    driver: bridge
